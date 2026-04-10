@@ -6,20 +6,23 @@
     <title>Design Hub</title>
     <meta
       name="description"
-      content="Zon 的设计维度总入口：网页风格、UX、图标与后续更多设计方向的聚合站。"
+      content="Zon 的设计生态总入口。先判断你要处理的是网页风格、UX、图标识别，还是可复用的 AI 设计约束，再进入对应的独立站点。"
     />
     <style>
       :root {
         color-scheme: dark;
-        --bg: #090909;
-        --panel: #121212;
-        --panel-strong: #171717;
-        --line: #2b2b2b;
-        --line-strong: #3a3a3a;
-        --text: #f3f3f3;
-        --muted: #a0a0a0;
-        --soft: #6f6f6f;
-        --max: 1180px;
+        --bg: #070707;
+        --panel: #111111;
+        --panel-strong: #151515;
+        --line: #2a2a2a;
+        --line-strong: #3c3c3c;
+        --text: #f2f2f2;
+        --muted: #a7a7a7;
+        --soft: #727272;
+        --accent: #ffffff;
+        --max: 1240px;
+        --display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+        --sans: "Helvetica Neue", Arial, sans-serif;
       }
 
       * {
@@ -32,7 +35,7 @@
         padding: 0;
         background: var(--bg);
         color: var(--text);
-        font-family: "Helvetica Neue", "Arial Narrow", Arial, sans-serif;
+        font-family: var(--sans);
       }
 
       body {
@@ -67,215 +70,523 @@
       }
 
       .brand-mark {
-        font-size: 0.8rem;
         color: var(--muted);
+        font-size: 0.78rem;
       }
 
       .brand-name {
         font-size: 1rem;
       }
 
-      .topbar-nav {
+      .nav {
         display: flex;
         flex-wrap: wrap;
         gap: 16px;
         color: var(--muted);
-        font-size: 0.92rem;
+        font-size: 0.9rem;
+      }
+
+      .nav a:hover,
+      .nav a:focus-visible,
+      .route-link:hover,
+      .route-link:focus-visible,
+      .meta-link:hover,
+      .meta-link:focus-visible,
+      .footer a:hover,
+      .footer a:focus-visible {
+        color: var(--accent);
       }
 
       .hero {
         display: grid;
-        grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+        grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
         gap: 28px;
-        padding: 42px 0 28px;
+        padding: 42px 0 30px;
         border-bottom: 1px solid var(--line);
       }
 
-      .eyebrow {
-        margin: 0 0 14px;
+      .eyebrow,
+      .label {
+        margin: 0;
         color: var(--muted);
-        font-size: 0.82rem;
+        font-size: 0.78rem;
         letter-spacing: 0.12em;
         text-transform: uppercase;
       }
 
+      .hero h1,
+      .section-title,
+      .route-title,
+      .meta-title {
+        font-family: var(--display);
+      }
+
       .hero h1 {
         margin: 0;
-        max-width: 12ch;
-        font-size: clamp(3rem, 7vw, 5.8rem);
+        max-width: 11ch;
+        font-size: clamp(3.2rem, 8vw, 6.6rem);
         line-height: 0.92;
         letter-spacing: -0.05em;
       }
 
       .hero-copy {
+        max-width: 46rem;
         margin-top: 18px;
-        max-width: 42rem;
         color: var(--muted);
-        font-size: 1.05rem;
+        font-size: 1.04rem;
+        line-height: 1.68;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .button,
+      .ghost-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 44px;
+        padding: 0 18px;
+        border: 1px solid var(--line-strong);
+        font-size: 0.92rem;
+        transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+      }
+
+      .button {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #050505;
+      }
+
+      .button:hover,
+      .button:focus-visible {
+        background: transparent;
+        color: var(--accent);
+      }
+
+      .ghost-button {
+        color: var(--text);
+      }
+
+      .ghost-button:hover,
+      .ghost-button:focus-visible {
+        border-color: var(--accent);
+      }
+
+      .hero-side {
+        display: grid;
+        align-content: start;
+        gap: 18px;
+      }
+
+      .manifesto,
+      .meta-panel,
+      .route-card,
+      .boundary-row,
+      .planned-card {
+        border: 1px solid var(--line);
+        background: var(--panel);
+      }
+
+      .manifesto {
+        padding: 20px;
+      }
+
+      .manifesto h2 {
+        margin: 10px 0 0;
+        font-size: 1.75rem;
+        line-height: 1.08;
+        letter-spacing: -0.04em;
+      }
+
+      .manifesto p {
+        margin: 14px 0 0;
+        color: var(--muted);
         line-height: 1.65;
       }
 
-      .hero-aside {
+      .manifesto-list {
         display: grid;
-        align-content: end;
-        gap: 14px;
-        padding: 20px;
-        border: 1px solid var(--line);
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
+        gap: 12px;
+        margin: 20px 0 0;
       }
 
-      .hero-note {
-        margin: 0;
+      .manifesto-item {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: 14px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+
+      .manifesto-index {
         color: var(--soft);
+        font-size: 1.4rem;
+        line-height: 1;
+        letter-spacing: -0.06em;
+      }
+
+      .manifesto-item strong {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 600;
+      }
+
+      .manifesto-item span {
+        color: var(--muted);
         font-size: 0.94rem;
         line-height: 1.55;
       }
 
-      .hero-links {
-        display: grid;
-        gap: 12px;
-      }
-
-      .hero-link {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 18px;
-        padding: 12px 0;
-        border-top: 1px solid var(--line);
-        color: var(--muted);
-      }
-
-      .hero-link strong {
-        color: var(--text);
-        font-size: 0.98rem;
-        font-weight: 600;
-      }
-
       .section {
-        padding: 26px 0 0;
+        padding: 34px 0 0;
       }
 
       .section-head {
-        display: flex;
-        align-items: end;
-        justify-content: space-between;
-        gap: 20px;
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.7fr);
+        gap: 18px;
         margin-bottom: 18px;
       }
 
       .section-title {
-        margin: 0;
-        font-size: 1.35rem;
-        font-weight: 600;
-        letter-spacing: -0.03em;
+        margin: 8px 0 0;
+        font-size: clamp(2rem, 4.6vw, 3.8rem);
+        line-height: 0.98;
+        letter-spacing: -0.05em;
       }
 
       .section-summary {
-        margin: 0;
-        max-width: 32rem;
+        margin: 28px 0 0;
         color: var(--muted);
-        font-size: 0.95rem;
-        line-height: 1.6;
+        font-size: 0.98rem;
+        line-height: 1.68;
       }
 
-      .grid {
+      .routes {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
       }
 
-      .card {
+      .route-card {
         display: grid;
-        gap: 14px;
-        min-height: 210px;
+        gap: 16px;
         padding: 18px;
-        border: 1px solid var(--line);
-        background: var(--panel);
-        transition: border-color 160ms ease, transform 160ms ease;
+        min-height: 320px;
+        transition: border-color 140ms ease, transform 140ms ease;
       }
 
-      .card:hover {
+      .route-card:hover,
+      .route-card:focus-within {
         border-color: var(--line-strong);
         transform: translateY(-2px);
       }
 
-      .card-meta {
+      .route-head,
+      .meta-head {
         display: flex;
-        align-items: center;
+        align-items: baseline;
         justify-content: space-between;
         gap: 12px;
+      }
+
+      .route-kicker,
+      .status,
+      .boundary-tag {
         color: var(--soft);
-        font-size: 0.78rem;
-        letter-spacing: 0.08em;
+        font-size: 0.76rem;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
       }
 
       .status {
         padding: 4px 8px;
         border: 1px solid var(--line);
-        color: var(--muted);
       }
 
-      .card h3 {
+      .route-cover {
+        position: relative;
+        min-height: 150px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: var(--panel-strong);
+      }
+
+      .route-cover::before,
+      .route-cover::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+      }
+
+      .route-cover.webdesign::before {
+        background-image:
+          linear-gradient(to right, rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+        background-size: 16% 100%, 100% 28%;
+      }
+
+      .route-cover.webdesign::after {
+        inset: 16px 18px auto 18px;
+        height: 52px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.12)),
+          linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.18) 46%, transparent 100%);
+        mix-blend-mode: screen;
+      }
+
+      .route-cover.ux::before {
+        background:
+          radial-gradient(circle at 16% 26%, rgba(255, 255, 255, 0.9) 0 4px, transparent 5px),
+          radial-gradient(circle at 48% 52%, rgba(255, 255, 255, 0.45) 0 4px, transparent 5px),
+          radial-gradient(circle at 76% 24%, rgba(255, 255, 255, 0.7) 0 4px, transparent 5px),
+          radial-gradient(circle at 82% 78%, rgba(255, 255, 255, 0.35) 0 4px, transparent 5px),
+          linear-gradient(128deg, transparent 0 18%, rgba(255, 255, 255, 0.26) 18% 19%, transparent 19% 47%, rgba(255, 255, 255, 0.2) 47% 48%, transparent 48% 78%, rgba(255, 255, 255, 0.16) 78% 79%, transparent 79%);
+      }
+
+      .route-cover.ux::after {
+        inset: auto 14px 16px 14px;
+        height: 28px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .route-cover.icon::before {
+        background:
+          linear-gradient(90deg, transparent 0 12%, rgba(255, 255, 255, 0.14) 12% 13%, transparent 13% 87%, rgba(255, 255, 255, 0.14) 87% 88%, transparent 88%),
+          linear-gradient(180deg, transparent 0 18%, rgba(255, 255, 255, 0.14) 18% 19%, transparent 19% 81%, rgba(255, 255, 255, 0.14) 81% 82%, transparent 82%);
+      }
+
+      .route-cover.icon::after {
+        inset: 24px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 31%, transparent 31% 34%, rgba(255, 255, 255, 0.44) 34% 65%, transparent 65% 68%, rgba(255, 255, 255, 0.2) 68% 100%);
+      }
+
+      .route-cover.skills::before {
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent),
+          repeating-linear-gradient(
+            to bottom,
+            transparent 0 17px,
+            rgba(255, 255, 255, 0.1) 17px 18px
+          );
+      }
+
+      .route-cover.skills::after {
+        inset: 18px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.78) 0 18%, transparent 18% 100%),
+          linear-gradient(90deg, transparent 0 22%, rgba(255, 255, 255, 0.26) 22% 52%, transparent 52% 100%),
+          linear-gradient(90deg, transparent 0 36%, rgba(255, 255, 255, 0.2) 36% 84%, transparent 84% 100%);
+        background-repeat: no-repeat;
+        background-size: 100% 10px, 100% 10px, 100% 10px;
+        background-position: 0 10px, 0 44px, 0 78px;
+      }
+
+      .route-title {
         margin: 0;
-        font-size: 1.5rem;
+        font-size: 2rem;
+        line-height: 1;
         letter-spacing: -0.04em;
       }
 
-      .card p {
+      .route-subtitle {
+        display: block;
+        margin-top: 6px;
+        color: var(--soft);
+        font-size: 0.86rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .route-card p,
+      .meta-card p,
+      .planned-card p {
         margin: 0;
         color: var(--muted);
-        line-height: 1.6;
+        line-height: 1.62;
       }
 
-      .card-foot {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px 14px;
-        margin-top: auto;
-        color: var(--soft);
-        font-size: 0.88rem;
-      }
-
+      .route-list,
       .planned-list {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 12px;
+        gap: 8px;
         margin: 0;
-        padding: 0 0 28px;
+        padding: 0;
         list-style: none;
       }
 
+      .route-list li,
       .planned-list li {
-        padding: 14px 0;
-        border-top: 1px solid var(--line);
+        padding-left: 16px;
+        position: relative;
+      }
+
+      .route-list li::before,
+      .planned-list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 10px;
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--soft);
+      }
+
+      .route-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: auto;
+      }
+
+      .route-link,
+      .meta-link {
+        color: var(--text);
+        font-size: 0.92rem;
+      }
+
+      .boundary-grid,
+      .meta-grid,
+      .planned-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .boundary-row {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr) minmax(0, 1fr) 180px;
+        gap: 16px;
+        padding: 16px 18px;
+      }
+
+      .boundary-title {
+        margin: 8px 0 4px;
+        font-size: 1.28rem;
+        letter-spacing: -0.03em;
+      }
+
+      .boundary-copy strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--text);
+        font-size: 0.92rem;
+      }
+
+      .boundary-copy p {
+        margin: 0;
         color: var(--muted);
+        font-size: 0.94rem;
+        line-height: 1.58;
+      }
+
+      .boundary-output {
+        color: var(--text);
+        font-size: 0.92rem;
+        line-height: 1.6;
+      }
+
+      .meta-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .meta-panel {
+        display: grid;
+        gap: 12px;
+        padding: 18px;
+        min-height: 220px;
+      }
+
+      .meta-title {
+        margin: 0;
+        font-size: 1.7rem;
+        line-height: 1.02;
+        letter-spacing: -0.04em;
+      }
+
+      .meta-foot {
+        margin-top: auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+        color: var(--soft);
+        font-size: 0.86rem;
+      }
+
+      .planned-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding-bottom: 30px;
+      }
+
+      .planned-card {
+        display: grid;
+        gap: 12px;
+        padding: 18px;
       }
 
       .footer {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 18px;
+        gap: 20px;
         padding: 18px 0 34px;
         border-top: 1px solid var(--line);
         color: var(--soft);
         font-size: 0.9rem;
       }
 
-      @media (max-width: 960px) {
+      @media (max-width: 1100px) {
         .hero,
-        .grid,
-        .planned-list {
+        .section-head,
+        .meta-grid,
+        .planned-grid,
+        .routes,
+        .boundary-row {
           grid-template-columns: 1fr;
         }
 
-        .section-head,
-        .footer,
-        .topbar {
-          align-items: start;
+        .section-summary {
+          margin-top: 0;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .shell {
+          width: min(calc(100% - 28px), var(--max));
+        }
+
+        .topbar,
+        .footer {
+          align-items: flex-start;
           flex-direction: column;
+        }
+
+        .hero {
+          padding-top: 32px;
+        }
+
+        .route-card,
+        .meta-panel,
+        .planned-card,
+        .manifesto,
+        .boundary-row {
+          padding: 16px;
+        }
+
+        .hero h1 {
+          max-width: 9ch;
+        }
+
+        .route-title,
+        .meta-title {
+          font-size: 1.7rem;
         }
       }
     </style>
@@ -287,109 +598,329 @@
           <span class="brand-mark">Zon</span>
           <strong class="brand-name">Design Hub</strong>
         </a>
-        <nav class="topbar-nav" aria-label="Primary">
-          <a href="https://webdesign.zondev.top">Webdesign</a>
-          <a href="https://ux.zondev.top">UX</a>
-          <a href="https://icon.zondev.top">Icon</a>
-          <a href="https://github.com/EOMZON/design-skills">Skills</a>
+        <nav class="nav" aria-label="Primary">
+          <a href="#routes">Routes</a>
+          <a href="#boundaries">Boundaries</a>
+          <a href="#network">Network</a>
+          <a href="https://github.com/EOMZON/design-hub">GitHub ↗</a>
         </nav>
       </header>
 
-      <section class="hero">
+      <section class="hero" id="top">
         <div>
-          <p class="eyebrow">Design Dimensions</p>
-          <h1>把不同设计维度拆开来看。</h1>
+          <p class="eyebrow">Design System Gateway</p>
+          <h1>先判断问题属于哪一层，再进对应的站。</h1>
           <p class="hero-copy">
-            这里不再把网页风格、UX、图标、结构和其他设计方向揉成一个站。
-            `design.zondev.top` 现在只做总入口，每个维度各自有独立站点、独立仓库、独立方法论。
+            `design.zondev.top` 不再做第二个内容站。它只负责总入口、任务分流、边界说明和生态关系。
+            如果你在找网页风格，就去 `webdesign`；如果你在改用户路径和可理解性，就去 `ux`；如果你在做图标与识别，就去 `icon`；如果你要复用 AI 约束包，就去 `design-skills`。
           </p>
-        </div>
-        <aside class="hero-aside">
-          <p class="eyebrow">Current Focus</p>
-          <p class="hero-note">网页风格 atlas 迁到 `webdesign.zondev.top`。这里保留总览、分发与后续扩展入口。</p>
-          <div class="hero-links">
-            <a class="hero-link" href="https://webdesign.zondev.top">
-              <strong>网页设计风格 / Webdesign</strong>
-              <span>Open</span>
-            </a>
-            <a class="hero-link" href="https://ux.zondev.top">
-              <strong>体验与清晰度 / UX</strong>
-              <span>Open</span>
-            </a>
-            <a class="hero-link" href="https://icon.zondev.top">
-              <strong>图标与识别 / Icon</strong>
-              <span>Open</span>
-            </a>
+          <div class="hero-actions">
+            <a class="button" href="#routes">按任务进入</a>
+            <a class="ghost-button" href="https://webdesign.zondev.top">先去网页风格 atlas ↗</a>
           </div>
+        </div>
+
+        <aside class="hero-side">
+          <article class="manifesto">
+            <p class="eyebrow">Operating Rule</p>
+            <h2>Hub 只做路由器，不和专站抢内容。</h2>
+            <p>正确的分工不是把所有设计内容揉在一起，而是把不同维度拆成独立站点，再由总入口解释它们的关系。</p>
+            <div class="manifesto-list">
+              <div class="manifesto-item">
+                <span class="manifesto-index">01</span>
+                <div>
+                  <strong>Hub 负责分流</strong>
+                  <span>告诉用户现在该去哪一站，而不是重复建设第二套 atlas。</span>
+                </div>
+              </div>
+              <div class="manifesto-item">
+                <span class="manifesto-index">02</span>
+                <div>
+                  <strong>专站负责深内容</strong>
+                  <span>截图、时间轴、prompt、skills、案例和方法论都应该沉到对应维度。</span>
+                </div>
+              </div>
+              <div class="manifesto-item">
+                <span class="manifesto-index">03</span>
+                <div>
+                  <strong>仓库负责可复用资产</strong>
+                  <span>`design-skills` 是共享层，用来沉淀可以被 AI 重复调用的约束包。</span>
+                </div>
+              </div>
+            </div>
+          </article>
         </aside>
       </section>
 
-      <section class="section">
+      <section class="section" id="routes">
         <div class="section-head">
-          <h2 class="section-title">Live Sites</h2>
-          <p class="section-summary">每个入口都指向一个单独维度，而不是共享一套混杂的设计语言。</p>
+          <div>
+            <p class="eyebrow">Entry Routes</p>
+            <h2 class="section-title">从你现在要解决的问题进入。</h2>
+          </div>
+          <p class="section-summary">
+            这里不按“名词百科”导航，而按任务进入。先问自己：我现在卡在视觉方向、体验路径、图标识别，还是 AI 可复用约束。
+          </p>
         </div>
-        <div class="grid">
-          <a class="card" href="https://webdesign.zondev.top">
-            <div class="card-meta">
-              <span>Webdesign</span>
-              <span class="status">Live</span>
-            </div>
-            <h3>网页设计风格图谱</h3>
-            <p>收集真实网站风格、风格家族、参考截图与可直接喂给 AI 的 prompt / skill。</p>
-            <div class="card-foot">
-              <span>webdesign.zondev.top</span>
-              <span>Atlas</span>
-              <span>Prompt-ready</span>
-            </div>
-          </a>
 
-          <a class="card" href="https://ux.zondev.top">
-            <div class="card-meta">
-              <span>UX</span>
+        <div class="routes">
+          <article class="route-card">
+            <div class="route-head">
+              <span class="route-kicker">Route 01</span>
               <span class="status">Live</span>
             </div>
-            <h3>体验与清晰度</h3>
-            <p>聚焦用户路径、服务体验、界面清晰度与结构判断，不再和视觉风格站混在一起。</p>
-            <div class="card-foot">
-              <span>ux.zondev.top</span>
-              <span>Audit</span>
-              <span>Clarity</span>
+            <div class="route-cover webdesign" aria-hidden="true"></div>
+            <div>
+              <h3 class="route-title">我要找网站视觉方向<span class="route-subtitle">Webdesign</span></h3>
             </div>
-          </a>
+            <p>适合你已经知道要做网站，但不知道它应该长什么样、适合哪类布局、该参考哪些真实网站。</p>
+            <ul class="route-list">
+              <li>负责：风格 atlas、真实网站参考、风格详情页、Prompt / Skill 对应。</li>
+              <li>不负责：完整 UX 问题分诊、图标系统、品牌识别策略。</li>
+            </ul>
+            <div class="route-links">
+              <a class="route-link" href="https://webdesign.zondev.top">Open webdesign.zondev.top ↗</a>
+            </div>
+          </article>
 
-          <a class="card" href="https://icon.zondev.top">
-            <div class="card-meta">
-              <span>Icon</span>
+          <article class="route-card">
+            <div class="route-head">
+              <span class="route-kicker">Route 02</span>
               <span class="status">Live</span>
             </div>
-            <h3>图标与识别系统</h3>
-            <p>处理 app icon、favicon、黑白识别和图标风格，不再挂在网页视觉站下面。</p>
-            <div class="card-foot">
-              <span>icon.zondev.top</span>
-              <span>Identity</span>
-              <span>System</span>
+            <div class="route-cover ux" aria-hidden="true"></div>
+            <div>
+              <h3 class="route-title">我要改用户路径和可理解性<span class="route-subtitle">UX</span></h3>
             </div>
-          </a>
+            <p>适合页面已经有了，但用户仍然看不懂、不会用、转化断掉，或者服务链路本身混乱。</p>
+            <ul class="route-list">
+              <li>负责：信息结构、任务流、清晰度、服务体验、问题定位与审计。</li>
+              <li>不负责：替代网页风格 atlas 或作为图标设计库。</li>
+            </ul>
+            <div class="route-links">
+              <a class="route-link" href="https://ux.zondev.top">Open ux.zondev.top ↗</a>
+            </div>
+          </article>
+
+          <article class="route-card">
+            <div class="route-head">
+              <span class="route-kicker">Route 03</span>
+              <span class="status">Live</span>
+            </div>
+            <div class="route-cover icon" aria-hidden="true"></div>
+            <div>
+              <h3 class="route-title">我要做图标与识别<span class="route-subtitle">Icon</span></h3>
+            </div>
+            <p>适合你要解决 app icon、favicon、字母识别、极简图标系统，而不是整页网站风格。</p>
+            <ul class="route-list">
+              <li>负责：图标语言、识别性、尺寸适配、黑白可辨认度。</li>
+              <li>不负责：整站结构、页面节奏、长内容呈现。</li>
+            </ul>
+            <div class="route-links">
+              <a class="route-link" href="https://icon.zondev.top">Open icon.zondev.top ↗</a>
+            </div>
+          </article>
+
+          <article class="route-card">
+            <div class="route-head">
+              <span class="route-kicker">Shared Layer</span>
+              <span class="status">Live</span>
+            </div>
+            <div class="route-cover skills" aria-hidden="true"></div>
+            <div>
+              <h3 class="route-title">我要拿可复用的 AI 约束包<span class="route-subtitle">Design Skills</span></h3>
+            </div>
+            <p>适合你已经选定方向，接下来要把风格规则、提示词、SKILL 文件和仓库资产拿走复用。</p>
+            <ul class="route-list">
+              <li>负责：Skill 文件、可复用提示词、跨站共享资产。</li>
+              <li>不负责：替代人类可读的浏览入口，也不负责讲完所有风格内容。</li>
+            </ul>
+            <div class="route-links">
+              <a class="route-link" href="https://github.com/EOMZON/design-skills">Open design-skills ↗</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="boundaries">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Boundaries</p>
+            <h2 class="section-title">每一站负责什么，不负责什么。</h2>
+          </div>
+          <p class="section-summary">
+            这是整个设计产品线最重要的纪律。只有边界明确，后面的 `webdesign / ux / icon / skills`
+            才不会再次合并成一个混乱的大站。
+          </p>
+        </div>
+
+        <div class="boundary-grid">
+          <article class="boundary-row">
+            <div>
+              <p class="boundary-tag">01 · Webdesign</p>
+              <h3 class="boundary-title">网页风格 atlas</h3>
+            </div>
+            <div class="boundary-copy">
+              <strong>负责</strong>
+              <p>风格家族、真实参考网站、场景匹配、Prompt / Skill 下载、网页设计语言的浏览与比较。</p>
+            </div>
+            <div class="boundary-copy">
+              <strong>不负责</strong>
+              <p>完整 UX 审计、图标识别系统、所有 design 子站的总导航。</p>
+            </div>
+            <div class="boundary-output">输出：风格方向、参考链接、可复用约束。</div>
+          </article>
+
+          <article class="boundary-row">
+            <div>
+              <p class="boundary-tag">02 · UX</p>
+              <h3 class="boundary-title">体验与清晰度</h3>
+            </div>
+            <div class="boundary-copy">
+              <strong>负责</strong>
+              <p>用户路径、信息可理解性、界面清晰度、服务断点与产品体验层面的判断。</p>
+            </div>
+            <div class="boundary-copy">
+              <strong>不负责</strong>
+              <p>代替网页风格 atlas 做风格图库，也不负责图标识别细节。</p>
+            </div>
+            <div class="boundary-output">输出：问题定位、改造建议、服务与交互层修正。</div>
+          </article>
+
+          <article class="boundary-row">
+            <div>
+              <p class="boundary-tag">03 · Icon</p>
+              <h3 class="boundary-title">图标与识别系统</h3>
+            </div>
+            <div class="boundary-copy">
+              <strong>负责</strong>
+              <p>图标风格、app icon、favicon、黑白可识别度、尺寸下的辨认与系统一致性。</p>
+            </div>
+            <div class="boundary-copy">
+              <strong>不负责</strong>
+              <p>整站布局、阅读节奏、历史流派归纳与大篇幅页面视觉体系。</p>
+            </div>
+            <div class="boundary-output">输出：图标方向、识别规则、可用尺寸资产。</div>
+          </article>
+
+          <article class="boundary-row">
+            <div>
+              <p class="boundary-tag">04 · Shared Layer</p>
+              <h3 class="boundary-title">Design Skills</h3>
+            </div>
+            <div class="boundary-copy">
+              <strong>负责</strong>
+              <p>把各站抽象出的 Prompt、Skill 文件和 AI 可复用规则沉到统一仓库。</p>
+            </div>
+            <div class="boundary-copy">
+              <strong>不负责</strong>
+              <p>直接承担用户浏览体验，也不应该取代人类可读的站内解释层。</p>
+            </div>
+            <div class="boundary-output">输出：可下载、可复用、可同步的 AI 设计约束。</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="network">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Live Network</p>
+            <h2 class="section-title">已上线的层，和接下来该拆的层。</h2>
+          </div>
+          <p class="section-summary">
+            现在已经稳定上线的是 4 个入口。之后要继续扩，也应该先定义边界，再决定要不要独立建站。
+          </p>
+        </div>
+
+        <div class="meta-grid">
+          <article class="meta-panel">
+            <div class="meta-head">
+              <p class="label">Live</p>
+              <span class="status">2026-04-11</span>
+            </div>
+            <h3 class="meta-title">当前可用入口</h3>
+            <p>`webdesign`、`ux`、`icon` 和 `design-skills` 已经形成四层结构，`design-hub` 负责把它们收口成同一个总入口。</p>
+            <div class="meta-foot">
+              <span>4 live entries</span>
+              <span>independent repos</span>
+              <span>shared ecosystem</span>
+            </div>
+          </article>
+
+          <article class="meta-panel">
+            <div class="meta-head">
+              <p class="label">Shared Resource</p>
+              <a class="meta-link" href="https://github.com/EOMZON/design-skills">design-skills ↗</a>
+            </div>
+            <h3 class="meta-title">资产统一放在共享层。</h3>
+            <p>真正会跨站复用的东西，不应该散落在每个站里重复写。Prompt、Skill 和可调用规则统一沉到 GitHub 共享仓库。</p>
+            <div class="meta-foot">
+              <span>skills</span>
+              <span>prompt packs</span>
+              <span>AI constraints</span>
+            </div>
+          </article>
+
+          <article class="meta-panel">
+            <div class="meta-head">
+              <p class="label">Hub Rule</p>
+              <a class="meta-link" href="https://github.com/EOMZON/design-hub">repo ↗</a>
+            </div>
+            <h3 class="meta-title">总入口不再变回大杂烩。</h3>
+            <p>后面即使新增 `motion`、`brand`、`IA`，也应该先通过这个入口解释它们的位置，而不是重新把所有内容揉回一个站。</p>
+            <div class="meta-foot">
+              <span>router first</span>
+              <span>shallow hub</span>
+              <span>clear boundaries</span>
+            </div>
+          </article>
         </div>
       </section>
 
       <section class="section">
         <div class="section-head">
-          <h2 class="section-title">Next Dimensions</h2>
-          <p class="section-summary">后续可以继续拆出更多独立方向，但都从这个总入口进入。</p>
+          <div>
+            <p class="eyebrow">Planned</p>
+            <h2 class="section-title">后续可以继续拆的维度。</h2>
+          </div>
+          <p class="section-summary">
+            这些还不应该和已上线入口同权重。只有当内容、方法、仓库和长期需求都够明确时，才值得独立出去。
+          </p>
         </div>
-        <ul class="planned-list">
-          <li>Information Architecture / 信息架构</li>
-          <li>Motion & Interaction / 动效与交互</li>
-          <li>Editorial Systems / 编辑系统</li>
-          <li>Brand Systems / 品牌系统</li>
-        </ul>
+
+        <div class="planned-grid">
+          <article class="planned-card">
+            <p class="label">Potential Split</p>
+            <h3 class="meta-title">Motion & Interaction</h3>
+            <p>如果后面动画、滚动叙事、交互风格成为稳定主题，再考虑拆出独立站，而不是先做空入口。</p>
+            <ul class="planned-list">
+              <li>scroll rhythm</li>
+              <li>micro interaction</li>
+              <li>narrative motion</li>
+            </ul>
+          </article>
+
+          <article class="planned-card">
+            <p class="label">Potential Split</p>
+            <h3 class="meta-title">IA / Brand Systems</h3>
+            <p>信息架构、品牌系统和更高层的方法论未来都可能独立，但前提是它们真的形成了持续更新的深内容。</p>
+            <ul class="planned-list">
+              <li>information architecture</li>
+              <li>brand systems</li>
+              <li>governance rules</li>
+            </ul>
+          </article>
+        </div>
       </section>
 
       <footer class="footer">
-        <span>Design Hub for zondev.top</span>
-        <span><a href="https://github.com/EOMZON/design-skills">design-skills ↗</a></span>
+        <span>Design Hub for the zondev design ecosystem.</span>
+        <span>
+          <a href="https://webdesign.zondev.top">Webdesign</a>
+          · <a href="https://ux.zondev.top">UX</a>
+          · <a href="https://icon.zondev.top">Icon</a>
+          · <a href="https://github.com/EOMZON/design-skills">Skills</a>
+        </span>
       </footer>
     </div>
   </body>

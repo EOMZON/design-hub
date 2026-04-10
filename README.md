@@ -1,25 +1,39 @@
 # Design Hub
 
-Static landing for `design.zondev.top`
+Static gateway for `design.zondev.top`.
 
 ## Purpose
 
-- act as the root entry for the independent Webdesign, UX, and Icon hubs
-- mirror live links for `webdesign.zondev.top`, `ux.zondev.top`, and `icon.zondev.top`
-- provide a lightweight, future-proof layer so new design dimensions can spin up without being forced into this repo
+- route users to the correct design dimension instead of becoming a second content-heavy atlas
+- explain the boundary between `webdesign`, `ux`, `icon`, and shared `design-skills`
+- provide one stable entry point for future design dimensions without merging them back into one mixed repo
 
-## Getting started
+## Content boundary
 
-1. `cd design-hub && git init`
-2. `git add .`
-3. `git commit -m "Initial commit"`
-4. Create the GitHub repo (for example, `EOMZON/design-hub`), add the remote via `git remote add origin <repo-url>`, and push (`git push -u origin main` or `master`)
+`design-hub` should stay shallow.
+
+It can contain:
+
+- task-based routing
+- ecosystem overview
+- boundary explanation
+- live / planned status
+- links to shared repositories
+
+It should not become:
+
+- a web-style gallery
+- a selector for website visual families
+- a history / movement encyclopedia
+- a duplicate prompt / skill download surface
+
+Those belong in the specialized sites, especially `webdesign-site`.
 
 ## Local preview
 
-- No build step. Open `index.html` in a browser or run a quick server: `python -m http.server 4173`, `npx serve .`, etc.
-- Keep `vercel.json` next to the static files so Vercel automatically picks up the configuration when deploying.
+- No build step. Open `index.html` directly or run a quick server such as `python -m http.server 4173` or `npx serve .`
+- Keep `vercel.json` next to the static files so Vercel can deploy the folder as-is
 
 ## Deploy
 
-This repo is a static folder. Deploy directly to Vercel or any static hosting that can serve the HTML.
+This repo is a static folder. Deploy directly to Vercel or any static host that serves HTML.
