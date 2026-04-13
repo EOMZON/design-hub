@@ -1,6 +1,6 @@
 # Design Hub
 
-Static router for `design.zondev.top`.
+Static snapshot hub for `design.zondev.top`.
 
 ## Purpose
 
@@ -12,7 +12,7 @@ It should do one job well:
 - keep the choice inside one stable entry point
 - let specialized sites carry the deep content
 
-The current UI therefore uses a sidebar + embedded viewer shell instead of long explanatory sections.
+The current UI therefore uses a `2x2` live snapshot grid plus a fullscreen focus layer instead of long explanatory sections.
 
 ## UI Rule
 
@@ -22,9 +22,9 @@ The homepage should answer one question first:
 
 That means:
 
-- default to task-first routing, not taxonomy explanation
-- keep the user inside the hub when switching between design dimensions
-- keep meta explanation minimal in the UI
+- show all major routes at once before asking the user to commit to one
+- let people judge by live content, not by long route descriptions
+- keep the user inside the hub when switching into focus mode
 - move boundary and discipline notes into this README instead of the front page
 
 ## Current Routes
@@ -58,9 +58,9 @@ That means:
 `design-hub` can contain:
 
 - routing UI
+- live snapshot previews
+- fullscreen focus viewing
 - lightweight route descriptions
-- live links
-- embedded subsite viewing
 - link-outs to GitHub or shared repos
 
 `design-hub` should not become:
@@ -79,6 +79,7 @@ That means:
   - `webdesign.zondev.top`
   - `ux.zondev.top`
   - `icon.zondev.top`
+- GitHub does not allow iframe embedding for `design-skills`, so the fourth tile uses a local README render + external link
 - boundary docs stay here so the UI can stay focused on routing
 
 ## Local Preview

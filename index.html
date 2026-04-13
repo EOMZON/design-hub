@@ -6,23 +6,22 @@
     <title>Design Hub</title>
     <meta
       name="description"
-      content="Design Hub 是 Zon 的设计总入口。左侧选择 Webdesign / UX / Icon / Skills，右侧直接打开对应内容。"
+      content="Design Hub 以 2x2 实时快照概览 webdesign、ux、icon 与 skills，点击任一窗口进入全屏专注视图。"
     />
     <style>
       :root {
         color-scheme: dark;
         --bg: #000000;
-        --surface: #050505;
-        --line: #262626;
-        --line-strong: #3a3a3a;
         --text: #ffffff;
-        --muted: #8b8b8b;
-        --muted-strong: #b7b7b7;
-        --frame: #0a0a0a;
-        --header-h: 52px;
-        --nav-w: 224px;
-        --display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-        --sans: "Helvetica Neue", Arial, sans-serif;
+        --muted: #8a8a8a;
+        --line: #333333;
+        --line-strong: #5a5a5a;
+        --panel: #060606;
+        --bar-h: 32px;
+        --focus-bar-h: 40px;
+        --mono: "SFMono-Regular", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+        --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --ease: 220ms ease;
       }
 
       * {
@@ -32,11 +31,14 @@
       html,
       body {
         margin: 0;
-        padding: 0;
         min-height: 100%;
         background: var(--bg);
         color: var(--text);
         font-family: var(--sans);
+      }
+
+      body {
+        overflow: hidden;
       }
 
       a,
@@ -52,528 +54,968 @@
       button {
         border: 0;
         background: transparent;
+        padding: 0;
         cursor: pointer;
       }
 
-      .site-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        height: var(--header-h);
-        padding: 0 18px;
-        border-bottom: 1px solid var(--line);
+      .hub-shell {
+        min-height: 100dvh;
+        background: var(--bg);
       }
 
-      .brand {
-        display: inline-flex;
-        align-items: baseline;
-        gap: 10px;
-        font-size: 0.95rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      .brand-mark {
-        color: var(--muted);
-        font-size: 0.76rem;
-      }
-
-      .brand strong {
-        font-family: var(--display);
-        font-size: 1.16rem;
-        font-weight: 600;
-        letter-spacing: -0.03em;
-        text-transform: none;
-      }
-
-      .top-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        min-height: 28px;
-        color: var(--muted-strong);
-        font-size: 0.82rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        border-bottom: 1px solid transparent;
-        transition: color 120ms ease, border-color 120ms ease;
-      }
-
-      .top-link:hover,
-      .top-link:focus-visible,
-      .route-button:hover,
-      .route-button:focus-visible,
-      .route-open-link:hover,
-      .route-open-link:focus-visible,
-      .skills-link:hover,
-      .skills-link:focus-visible {
-        color: var(--text);
-        border-color: currentColor;
-      }
-
-      .app-shell {
+      .snapshot-grid {
         display: grid;
-        grid-template-columns: var(--nav-w) minmax(0, 1fr);
-        min-height: calc(100vh - var(--header-h));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        min-height: 100dvh;
+        background: var(--line);
       }
 
-      .route-nav {
-        border-right: 1px solid var(--line);
+      .snapshot-grid.is-transitioning .snapshot-card {
+        opacity: 0.2;
       }
 
-      .route-list {
-        display: grid;
-      }
-
-      .route-button {
-        display: grid;
-        gap: 4px;
-        width: 100%;
-        padding: 18px 18px 16px;
-        border-bottom: 1px solid var(--line);
-        text-align: left;
-        transition: padding-left 120ms ease, color 120ms ease;
-      }
-
-      .route-button.is-active {
-        padding-left: 24px;
-      }
-
-      .route-button.is-active .route-name {
-        font-weight: 700;
-      }
-
-      .route-button.is-active .route-sub {
-        color: var(--text);
-      }
-
-      .route-button.is-active::before,
-      .route-button:hover::before,
-      .route-button:focus-visible::before {
+      .snapshot-grid.is-transitioning .snapshot-card.is-origin {
         opacity: 1;
       }
 
-      .route-button::before {
+      .snapshot-card {
+        position: relative;
+        display: grid;
+        grid-template-rows: var(--bar-h) minmax(0, 1fr);
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+        background: var(--panel);
+        cursor: pointer;
+        outline: 1px solid transparent;
+        outline-offset: -1px;
+        transition: outline-color 120ms ease, opacity var(--ease);
+      }
+
+      .snapshot-card:hover,
+      .snapshot-card:focus-visible,
+      .snapshot-card.is-origin {
+        outline-color: var(--text);
+      }
+
+      .snapshot-card:focus-visible {
+        outline-color: var(--text);
+      }
+
+      .snapshot-card:hover .card-topline,
+      .snapshot-card:focus-visible .card-topline,
+      .snapshot-card.is-origin .card-topline {
+        background: var(--text);
+        color: #000000;
+      }
+
+      .card-topline {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 12px;
+        border-bottom: 1px solid var(--line);
+        background: #000000;
+        color: var(--text);
+        transition: background 120ms ease, color 120ms ease;
+      }
+
+      .card-title {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .card-open {
+        position: relative;
+        z-index: 3;
+        flex: none;
+        color: currentColor;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.88;
+      }
+
+      .card-stage {
+        position: relative;
+        min-height: 0;
+        overflow: hidden;
+        background: #000000;
+      }
+
+      .card-loader {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        display: grid;
+        place-items: center;
+        background: #000000;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 0.74rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        opacity: 1;
+        pointer-events: none;
+        transition: opacity 140ms ease;
+      }
+
+      .snapshot-card.is-loaded .card-loader {
+        opacity: 0;
+      }
+
+      .snapshot-hit {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+      }
+
+      .snapshot-viewport {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: #000000;
+      }
+
+      .snapshot-canvas {
+        width: 200%;
+        height: 200%;
+        transform: scale(0.5);
+        transform-origin: 0 0;
+      }
+
+      .snapshot-frame {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #111111;
+        pointer-events: none;
+      }
+
+      .skills-preview {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        padding: 18px 16px 16px;
+        background:
+          linear-gradient(to bottom, rgba(0, 0, 0, 0) 72%, rgba(0, 0, 0, 0.96) 100%);
+      }
+
+      .skills-preview::before {
         content: "";
         position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 28%),
+          repeating-linear-gradient(
+            to bottom,
+            transparent 0 21px,
+            rgba(255, 255, 255, 0.05) 21px 22px
+          );
+        opacity: 0.28;
+        pointer-events: none;
+      }
+
+      .skills-preview pre {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        line-height: 1.62;
+        white-space: pre-wrap;
+      }
+
+      .focus-shell {
+        position: fixed;
+        top: 0;
         left: 0;
-        width: 1px;
-        height: 28px;
-        background: var(--text);
+        width: 100vw;
+        height: 100dvh;
+        z-index: 40;
+        overflow: hidden;
+        background: #000000;
+        border: 1px solid var(--line);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          top var(--ease),
+          left var(--ease),
+          width var(--ease),
+          height var(--ease),
+          opacity 140ms ease;
+      }
+
+      .focus-shell.is-visible {
+        opacity: 1;
+      }
+
+      .focus-shell.is-ready {
+        pointer-events: auto;
+      }
+
+      .focus-topline,
+      .focus-body {
         opacity: 0;
         transition: opacity 120ms ease;
       }
 
-      .route-button {
+      .focus-shell.is-ready .focus-topline,
+      .focus-shell.is-ready .focus-body {
+        opacity: 1;
+      }
+
+      .focus-topline {
         position: relative;
-      }
-
-      .route-name {
-        font-size: 1.05rem;
-        letter-spacing: -0.02em;
-      }
-
-      .route-sub {
-        color: var(--muted);
-        font-size: 0.76rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .viewer {
+        z-index: 2;
         display: grid;
-        grid-template-rows: 42px minmax(0, 1fr);
-        min-width: 0;
-      }
-
-      .viewer-topline {
-        display: flex;
+        grid-template-columns: auto 1fr auto;
         align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        padding: 0 18px;
+        gap: 12px;
+        height: var(--focus-bar-h);
+        padding: 0 12px;
         border-bottom: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(16px);
       }
 
-      .viewer-route {
-        display: grid;
-        align-content: center;
-        gap: 2px;
-        min-width: 0;
-      }
-
-      .viewer-kicker {
-        color: var(--muted);
-        font-size: 0.68rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .viewer-title {
-        margin: 0;
+      .focus-back,
+      .focus-open {
+        min-height: 24px;
         color: var(--text);
-        font-family: var(--display);
-        font-size: 1.1rem;
-        font-weight: 600;
-        letter-spacing: -0.03em;
-        line-height: 1;
-      }
-
-      .route-open-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--muted-strong);
-        font-size: 0.76rem;
-        letter-spacing: 0.08em;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
         border-bottom: 1px solid transparent;
-        transition: color 120ms ease, border-color 120ms ease;
       }
 
-      .viewer-stage {
+      .focus-back:hover,
+      .focus-back:focus-visible,
+      .focus-open:hover,
+      .focus-open:focus-visible {
+        border-color: currentColor;
+      }
+
+      .focus-title {
+        margin: 0;
+        text-align: center;
+        font-family: var(--mono);
+        font-size: 0.74rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .focus-body {
         position: relative;
-        min-height: 0;
-        background: var(--frame);
+        height: calc(100% - var(--focus-bar-h));
+        background: #000000;
       }
 
-      .viewer-stage.is-loading .viewer-frame {
+      .focus-loader {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        display: grid;
+        place-items: center;
+        background: #000000;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 0.76rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
         opacity: 0;
+        pointer-events: none;
+        transition: opacity 140ms ease;
       }
 
-      .viewer-stage.is-loading .loading-state {
+      .focus-body.is-loading .focus-loader {
         opacity: 1;
-        pointer-events: auto;
       }
 
-      .viewer-frame,
-      .skills-surface {
+      .focus-frame,
+      .focus-skills {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
         border: 0;
+        background: #000000;
       }
 
-      .viewer-frame {
-        background: #ffffff;
-        opacity: 1;
-        transition: opacity 100ms ease;
-      }
-
-      .viewer-frame.is-hidden,
-      .skills-surface.is-hidden {
+      .focus-frame.is-hidden,
+      .focus-skills.is-hidden {
         display: none;
       }
 
-      .loading-state {
-        position: absolute;
-        inset: 0;
-        display: grid;
-        place-items: center;
-        background: #000000;
-        color: #ffffff;
-        font-size: 0.78rem;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 100ms ease;
-      }
-
-      .skills-surface {
-        display: grid;
-        align-content: start;
-        gap: 18px;
-        padding: 30px 28px 28px;
+      .focus-skills {
         overflow: auto;
-        background: #000000;
+        padding: 30px 28px 32px;
       }
 
-      .skills-pre {
+      .focus-skills-shell {
+        display: grid;
+        gap: 24px;
+        max-width: 980px;
+      }
+
+      .focus-skills-intro {
+        display: grid;
+        gap: 8px;
+      }
+
+      .focus-skills-kicker {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .focus-skills-title {
         margin: 0;
-        padding: 0;
-        color: var(--text);
-        font-family: "SFMono-Regular", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-        font-size: 0.88rem;
-        line-height: 1.85;
-        white-space: pre-wrap;
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        line-height: 0.94;
+        letter-spacing: -0.04em;
       }
 
-      .skills-links {
+      .focus-skills-copy {
+        max-width: 44rem;
+        margin: 0;
+        color: #c7c7c7;
+        font-size: 0.98rem;
+        line-height: 1.7;
+      }
+
+      .focus-skills-links {
         display: flex;
         flex-wrap: wrap;
-        gap: 12px;
+        gap: 12px 18px;
       }
 
-      .skills-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--muted-strong);
-        font-size: 0.8rem;
+      .focus-skills-links a {
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 0.78rem;
         letter-spacing: 0.1em;
         text-transform: uppercase;
         border-bottom: 1px solid transparent;
-        transition: color 120ms ease, border-color 120ms ease;
+      }
+
+      .focus-skills-links a:hover,
+      .focus-skills-links a:focus-visible {
+        border-color: currentColor;
+      }
+
+      .focus-skills-readme {
+        margin: 0;
+        padding: 22px 20px;
+        border: 1px solid var(--line);
+        background: #050505;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 0.9rem;
+        line-height: 1.8;
+        white-space: pre-wrap;
+      }
+
+      .focus-shell[data-active="skills"] .focus-open {
+        content-visibility: auto;
+      }
+
+      .hub-note {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        z-index: 5;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        pointer-events: none;
+        mix-blend-mode: difference;
       }
 
       @media (max-width: 840px) {
-        .app-shell {
+        body {
+          overflow: auto;
+        }
+
+        .snapshot-grid {
           grid-template-columns: 1fr;
-          grid-template-rows: auto minmax(0, 1fr);
+          grid-template-rows: none;
+          min-height: auto;
         }
 
-        .route-nav {
-          overflow-x: auto;
-          border-right: 0;
-          border-bottom: 1px solid var(--line);
+        .snapshot-card {
+          min-height: 40vh;
         }
 
-        .route-list {
-          grid-auto-flow: column;
-          grid-auto-columns: minmax(148px, 1fr);
+        .snapshot-canvas {
+          width: 300%;
+          height: 300%;
+          transform: scale(0.333333);
         }
 
-        .route-button {
-          min-height: 64px;
-          padding: 14px 16px;
-          border-bottom: 0;
-          border-right: 1px solid var(--line);
+        .focus-topline {
+          grid-template-columns: auto 1fr;
         }
 
-        .route-button.is-active {
-          padding-left: 16px;
+        .focus-title {
+          justify-self: start;
+          text-align: left;
         }
 
-        .route-button::before {
-          left: auto;
-          bottom: 0;
-          width: 100%;
-          height: 1px;
+        .focus-open {
+          display: none;
         }
 
-        .viewer {
-          min-height: calc(100vh - var(--header-h) - 65px);
+        .focus-skills {
+          padding: 22px 18px 24px;
+        }
+
+        .focus-skills-readme {
+          padding: 18px 16px;
+          font-size: 0.84rem;
+        }
+
+        .hub-note {
+          display: none;
         }
       }
     </style>
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="/" aria-label="Design Hub home">
-        <span class="brand-mark">Zon</span>
-        <strong>Design Hub</strong>
-      </a>
-      <a class="top-link" href="https://github.com/EOMZON/design-hub" target="_blank" rel="noreferrer noopener">
-        GitHub ↗
-      </a>
-    </header>
-
-    <main class="app-shell">
-      <nav class="route-nav" aria-label="Design routes">
-        <div class="route-list">
-          <button class="route-button" type="button" data-route="webdesign">
-            <span class="route-name">Webdesign</span>
-            <span class="route-sub">视觉方向</span>
-          </button>
-          <button class="route-button" type="button" data-route="ux">
-            <span class="route-name">UX</span>
-            <span class="route-sub">用户路径</span>
-          </button>
-          <button class="route-button" type="button" data-route="icon">
-            <span class="route-name">Icon</span>
-            <span class="route-sub">识别系统</span>
-          </button>
-          <button class="route-button" type="button" data-route="skills">
-            <span class="route-name">Skills</span>
-            <span class="route-sub">复用资产</span>
-          </button>
-        </div>
-      </nav>
-
-      <section class="viewer" aria-label="Embedded route view">
-        <div class="viewer-topline">
-          <div class="viewer-route">
-            <span class="viewer-kicker">Current Route</span>
-            <p class="viewer-title" id="route-label">Webdesign</p>
+    <main class="hub-shell">
+      <section class="snapshot-grid" id="snapshot-grid" aria-label="Design Hub overview">
+        <article
+          class="snapshot-card"
+          data-route="webdesign"
+          role="button"
+          tabindex="0"
+          aria-label="Open Webdesign focus view"
+        >
+          <div class="card-topline">
+            <span class="card-title">Webdesign</span>
+            <a
+              class="card-open"
+              href="https://webdesign.zondev.top/browse"
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="Open Webdesign in new tab"
+            >
+              ↗
+            </a>
           </div>
-          <a
-            class="route-open-link"
-            id="route-open"
-            href="https://webdesign.zondev.top/browse"
-            target="_blank"
-            rel="noreferrer noopener"
-            aria-label="Open Webdesign in new tab"
-            title="webdesign.zondev.top/browse"
-          >
-            Open ↗
-          </a>
-        </div>
-
-        <div class="viewer-stage is-loading" id="viewer-stage">
-          <div class="loading-state" id="loading-state">Loading...</div>
-          <iframe
-            class="viewer-frame"
-            id="viewer-frame"
-            title="Embedded site view"
-            src="https://webdesign.zondev.top/browse"
-          ></iframe>
-
-          <section class="skills-surface is-hidden" id="skills-surface" aria-label="Design Skills">
-            <pre class="skills-pre" id="skills-pre"></pre>
-            <div class="skills-links">
-              <a
-                class="skills-link"
-                href="https://github.com/EOMZON/design-skills"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                GitHub Repo ↗
-              </a>
-              <a
-                class="skills-link"
-                href="https://github.com/EOMZON/design-hub/blob/main/README.md"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                Hub README ↗
-              </a>
+          <div class="card-stage">
+            <div class="card-loader">Loading</div>
+            <div class="snapshot-hit" aria-hidden="true"></div>
+            <div class="snapshot-viewport">
+              <div class="snapshot-canvas">
+                <iframe
+                  class="snapshot-frame"
+                  title="Webdesign snapshot"
+                  data-preview-frame="webdesign"
+                  src="https://webdesign.zondev.top/browse"
+                  loading="eager"
+                ></iframe>
+              </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </article>
+
+        <article
+          class="snapshot-card"
+          data-route="ux"
+          role="button"
+          tabindex="0"
+          aria-label="Open UX focus view"
+        >
+          <div class="card-topline">
+            <span class="card-title">UX</span>
+            <a
+              class="card-open"
+              href="https://ux.zondev.top"
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="Open UX in new tab"
+            >
+              ↗
+            </a>
+          </div>
+          <div class="card-stage">
+            <div class="card-loader">Loading</div>
+            <div class="snapshot-hit" aria-hidden="true"></div>
+            <div class="snapshot-viewport">
+              <div class="snapshot-canvas">
+                <iframe
+                  class="snapshot-frame"
+                  title="UX snapshot"
+                  data-preview-frame="ux"
+                  loading="lazy"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article
+          class="snapshot-card"
+          data-route="icon"
+          role="button"
+          tabindex="0"
+          aria-label="Open Icon focus view"
+        >
+          <div class="card-topline">
+            <span class="card-title">Icon</span>
+            <a
+              class="card-open"
+              href="https://icon.zondev.top"
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="Open Icon in new tab"
+            >
+              ↗
+            </a>
+          </div>
+          <div class="card-stage">
+            <div class="card-loader">Loading</div>
+            <div class="snapshot-hit" aria-hidden="true"></div>
+            <div class="snapshot-viewport">
+              <div class="snapshot-canvas">
+                <iframe
+                  class="snapshot-frame"
+                  title="Icon snapshot"
+                  data-preview-frame="icon"
+                  loading="lazy"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article
+          class="snapshot-card"
+          data-route="skills"
+          role="button"
+          tabindex="0"
+          aria-label="Open Skills focus view"
+        >
+          <div class="card-topline">
+            <span class="card-title">Skills</span>
+            <a
+              class="card-open"
+              href="https://github.com/EOMZON/design-skills"
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="Open Skills repo in new tab"
+            >
+              ↗
+            </a>
+          </div>
+          <div class="card-stage">
+            <div class="card-loader" id="skills-preview-loader">Loading</div>
+            <div class="snapshot-hit" aria-hidden="true"></div>
+            <div class="skills-preview">
+              <pre id="skills-preview-copy">Loading README snapshot…</pre>
+            </div>
+          </div>
+        </article>
       </section>
     </main>
+
+    <div class="hub-note">2x2 live snapshot / click to focus</div>
+
+    <section class="focus-shell" id="focus-shell" hidden aria-label="Focused route view">
+      <div class="focus-topline">
+        <button class="focus-back" id="focus-back" type="button">← Design Hub</button>
+        <p class="focus-title" id="focus-title">Webdesign</p>
+        <a class="focus-open" id="focus-open" href="/" target="_blank" rel="noreferrer noopener">
+          在新标签打开 ↗
+        </a>
+      </div>
+      <div class="focus-body" id="focus-body">
+        <div class="focus-loader" id="focus-loader">Loading</div>
+        <iframe class="focus-frame is-hidden" id="focus-frame" title="Focused route view"></iframe>
+        <article class="focus-skills is-hidden" id="focus-skills">
+          <div class="focus-skills-shell">
+            <div class="focus-skills-intro">
+              <span class="focus-skills-kicker">Design Assets</span>
+              <h1 class="focus-skills-title">Skills</h1>
+              <p class="focus-skills-copy">
+                这里不做 GitHub 仓库页的硬嵌入，而是直接把可复用 skill / prompt / constraint 的 README 摘要铺开。
+              </p>
+              <div class="focus-skills-links">
+                <a href="https://github.com/EOMZON/design-skills" target="_blank" rel="noreferrer noopener">
+                  GitHub Repo ↗
+                </a>
+                <a
+                  href="https://raw.githubusercontent.com/EOMZON/design-skills/main/README.md"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  Raw README ↗
+                </a>
+              </div>
+            </div>
+            <pre class="focus-skills-readme" id="focus-skills-copy">Loading README…</pre>
+          </div>
+        </article>
+      </div>
+    </section>
 
     <script>
       const routes = {
         webdesign: {
           label: "Webdesign",
-          domain: "webdesign.zondev.top/browse",
           href: "https://webdesign.zondev.top/browse",
-          type: "iframe"
+          type: "iframe",
+          eager: true
         },
         ux: {
           label: "UX",
-          domain: "ux.zondev.top",
           href: "https://ux.zondev.top",
           type: "iframe"
         },
         icon: {
           label: "Icon",
-          domain: "icon.zondev.top",
           href: "https://icon.zondev.top",
           type: "iframe"
         },
         skills: {
           label: "Skills",
-          domain: "github.com/EOMZON/design-skills",
           href: "https://github.com/EOMZON/design-skills",
           type: "skills",
-          text: [
-            "design-skills",
-            "",
-            "把已经选好的方向",
-            "整理成 AI 可以继续调用的资产。",
-            "",
-            "prompt templates",
-            "skill files",
-            "shared constraints",
-            "",
-            "适合",
-            "- 继续喂给 Cursor / Claude",
-            "- 把规则沉淀成可复用 skill",
-            "- 在不同设计站之间共用约束",
-            "",
-            "open",
-            "- github: https://github.com/EOMZON/design-skills",
-            "- readme: https://github.com/EOMZON/design-hub/blob/main/README.md"
-          ].join("\n")
+          readmeUrl: "https://raw.githubusercontent.com/EOMZON/design-skills/main/README.md"
         }
       };
 
-      const routeButtons = Array.from(document.querySelectorAll(".route-button"));
-      const routeLabel = document.getElementById("route-label");
-      const routeOpen = document.getElementById("route-open");
-      const viewerStage = document.getElementById("viewer-stage");
-      const viewerFrame = document.getElementById("viewer-frame");
-      const skillsSurface = document.getElementById("skills-surface");
-      const skillsPre = document.getElementById("skills-pre");
+      const snapshotGrid = document.getElementById("snapshot-grid");
+      const cards = Array.from(document.querySelectorAll(".snapshot-card"));
+      const previewFrames = Array.from(document.querySelectorAll("[data-preview-frame]"));
+      const focusShell = document.getElementById("focus-shell");
+      const focusBody = document.getElementById("focus-body");
+      const focusBack = document.getElementById("focus-back");
+      const focusTitle = document.getElementById("focus-title");
+      const focusOpen = document.getElementById("focus-open");
+      const focusLoader = document.getElementById("focus-loader");
+      const focusFrame = document.getElementById("focus-frame");
+      const focusSkills = document.getElementById("focus-skills");
+      const skillsPreviewCopy = document.getElementById("skills-preview-copy");
+      const skillsPreviewLoader = document.getElementById("skills-preview-loader");
+      const focusSkillsCopy = document.getElementById("focus-skills-copy");
 
-      let currentRoute = "";
+      const state = {
+        activeRoute: null,
+        mode: "grid",
+        loadedMap: {
+          webdesign: false,
+          ux: false,
+          icon: false,
+          skills: false
+        },
+        readmeText: "",
+        readmePromise: null
+      };
 
-      function setActiveButton(routeId) {
-        routeButtons.forEach((button) => {
-          const active = button.dataset.route === routeId;
-          button.classList.toggle("is-active", active);
-          button.setAttribute("aria-pressed", active ? "true" : "false");
-        });
+      function markLoaded(routeId) {
+        state.loadedMap[routeId] = true;
+        const card = document.querySelector(`.snapshot-card[data-route="${routeId}"]`);
+        if (card) {
+          card.classList.add("is-loaded");
+        }
       }
 
-      function renderSkills(route) {
-        viewerStage.classList.remove("is-loading");
-        viewerFrame.classList.add("is-hidden");
-        skillsSurface.classList.remove("is-hidden");
-        skillsPre.textContent = route.text;
+      function setPreviewSource(routeId) {
+        const frame = document.querySelector(`[data-preview-frame="${routeId}"]`);
+        const route = routes[routeId];
+        if (!frame || !route || route.type !== "iframe" || frame.dataset.loaded === "true") {
+          return;
+        }
+
+        frame.addEventListener(
+          "load",
+          () => {
+            frame.dataset.loaded = "true";
+            markLoaded(routeId);
+          },
+          { once: true }
+        );
+        frame.src = route.href;
       }
 
-      function renderIframe(route) {
-        skillsSurface.classList.add("is-hidden");
-        viewerFrame.classList.remove("is-hidden");
-        viewerStage.classList.add("is-loading");
+      function deferredPreviews() {
+        const launch = () => {
+          setTimeout(() => setPreviewSource("ux"), 320);
+          setTimeout(() => setPreviewSource("icon"), 640);
+        };
 
-        if (viewerFrame.src !== route.href) {
-          viewerFrame.src = route.href;
+        if ("requestIdleCallback" in window) {
+          window.requestIdleCallback(launch, { timeout: 1200 });
+        } else {
+          setTimeout(launch, 320);
+        }
+      }
+
+      function getReadmePreview(text) {
+        const lines = text.split("\n").slice(0, 22).join("\n");
+        return lines.length ? lines : "README preview unavailable.";
+      }
+
+      async function ensureSkillsReadme() {
+        if (state.readmeText) {
+          return state.readmeText;
+        }
+
+        if (!state.readmePromise) {
+          state.readmePromise = fetch(routes.skills.readmeUrl)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`Failed to fetch README (${response.status})`);
+              }
+              return response.text();
+            })
+            .then((text) => {
+              state.readmeText = text;
+              skillsPreviewCopy.textContent = getReadmePreview(text);
+              focusSkillsCopy.textContent = text;
+              markLoaded("skills");
+              skillsPreviewLoader.style.opacity = "0";
+              return text;
+            })
+            .catch(() => {
+              const fallback = [
+                "# design-skills",
+                "",
+                "Skill / prompt / constraint assets for the design network.",
+                "",
+                "- pick a style on webdesign.zondev.top",
+                "- take the matching SKILL.md",
+                "- reuse it in Cursor / Claude / Codex",
+                "",
+                "Open the repo in a new tab for the full index."
+              ].join("\n");
+
+              state.readmeText = fallback;
+              skillsPreviewCopy.textContent = fallback;
+              focusSkillsCopy.textContent = fallback;
+              markLoaded("skills");
+              skillsPreviewLoader.style.opacity = "0";
+              return fallback;
+            });
+        }
+
+        return state.readmePromise;
+      }
+
+      function renderFocusRoute(routeId) {
+        const route = routes[routeId];
+        state.activeRoute = routeId;
+        focusShell.dataset.active = routeId;
+        focusTitle.textContent = route.label;
+        focusOpen.href = route.href;
+        focusOpen.setAttribute("aria-label", `Open ${route.label} in new tab`);
+
+        if (route.type === "skills") {
+          focusBody.classList.remove("is-loading");
+          focusFrame.classList.add("is-hidden");
+          focusSkills.classList.remove("is-hidden");
+          focusOpen.textContent = "打开 GitHub ↗";
+          ensureSkillsReadme();
+          return;
+        }
+
+        focusOpen.textContent = "在新标签打开 ↗";
+        focusSkills.classList.add("is-hidden");
+        focusFrame.classList.remove("is-hidden");
+        focusBody.classList.add("is-loading");
+
+        if (focusFrame.dataset.route !== routeId) {
+          focusFrame.dataset.route = routeId;
+          focusFrame.src = route.href;
         } else {
           requestAnimationFrame(() => {
-            viewerStage.classList.remove("is-loading");
+            focusBody.classList.remove("is-loading");
           });
         }
       }
 
-      function setRoute(routeId) {
-        const route = routes[routeId] || routes.webdesign;
-        currentRoute = routeId;
-        setActiveButton(routeId);
-        routeLabel.textContent = route.label;
-        routeOpen.href = route.href;
-        routeOpen.title = route.domain;
-        routeOpen.setAttribute("aria-label", `Open ${route.label} in new tab`);
-
-        if (route.type === "skills") {
-          renderSkills(route);
-        } else {
-          renderIframe(route);
-        }
-
-        history.replaceState(null, "", `#${routeId}`);
+      function clearOriginState() {
+        cards.forEach((card) => card.classList.remove("is-origin"));
+        snapshotGrid.classList.remove("is-transitioning");
       }
 
-      routeButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          setRoute(button.dataset.route);
+      function openRoute(routeId, options = {}) {
+        const route = routes[routeId];
+        if (!route) {
+          return;
+        }
+
+        const originCard =
+          options.originCard || document.querySelector(`.snapshot-card[data-route="${routeId}"]`);
+        const rect = originCard
+          ? originCard.getBoundingClientRect()
+          : { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+
+        cards.forEach((card) => card.classList.toggle("is-origin", card === originCard));
+        snapshotGrid.classList.add("is-transitioning");
+        renderFocusRoute(routeId);
+        focusShell.hidden = false;
+        focusShell.classList.add("is-visible");
+        focusShell.classList.remove("is-ready");
+
+        const instant = options.instant === true;
+
+        if (instant) {
+          focusShell.style.top = "0px";
+          focusShell.style.left = "0px";
+          focusShell.style.width = "100vw";
+          focusShell.style.height = "100dvh";
+          requestAnimationFrame(() => {
+            focusShell.classList.add("is-ready");
+            clearOriginState();
+          });
+        } else {
+          focusShell.style.top = `${rect.top}px`;
+          focusShell.style.left = `${rect.left}px`;
+          focusShell.style.width = `${rect.width}px`;
+          focusShell.style.height = `${rect.height}px`;
+
+          requestAnimationFrame(() => {
+            focusShell.style.top = "0px";
+            focusShell.style.left = "0px";
+            focusShell.style.width = "100vw";
+            focusShell.style.height = "100dvh";
+          });
+
+          window.setTimeout(() => {
+            focusShell.classList.add("is-ready");
+            clearOriginState();
+          }, 180);
+        }
+
+        state.mode = "focus";
+
+        if (!options.skipHistory) {
+          history.replaceState(null, "", `#${routeId}`);
+        }
+      }
+
+      function closeRoute(options = {}) {
+        if (state.mode !== "focus" || !state.activeRoute) {
+          return;
+        }
+
+        const routeId = state.activeRoute;
+        const originCard = document.querySelector(`.snapshot-card[data-route="${routeId}"]`);
+        const rect = originCard
+          ? originCard.getBoundingClientRect()
+          : { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+
+        focusShell.classList.remove("is-ready");
+
+        requestAnimationFrame(() => {
+          focusShell.style.top = `${rect.top}px`;
+          focusShell.style.left = `${rect.left}px`;
+          focusShell.style.width = `${rect.width}px`;
+          focusShell.style.height = `${rect.height}px`;
+        });
+
+        window.setTimeout(() => {
+          focusShell.classList.remove("is-visible");
+          focusShell.hidden = true;
+          clearOriginState();
+          focusShell.style.top = "0px";
+          focusShell.style.left = "0px";
+          focusShell.style.width = "100vw";
+          focusShell.style.height = "100dvh";
+        }, 220);
+
+        state.mode = "grid";
+        state.activeRoute = null;
+
+        if (!options.skipHistory) {
+          history.replaceState(null, "", "#grid");
+        }
+      }
+
+      cards.forEach((card) => {
+        card.addEventListener("click", (event) => {
+          if (event.target.closest(".card-open")) {
+            return;
+          }
+          openRoute(card.dataset.route, { originCard: card });
+        });
+
+        card.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openRoute(card.dataset.route, { originCard: card });
+          }
         });
       });
 
-      viewerFrame.addEventListener("load", () => {
-        if (currentRoute && routes[currentRoute]?.type === "iframe") {
-          viewerStage.classList.remove("is-loading");
-        }
+      previewFrames.forEach((frame) => {
+        frame.addEventListener("load", () => {
+          const routeId = frame.dataset.previewFrame;
+          markLoaded(routeId);
+          frame.dataset.loaded = "true";
+        });
       });
 
-      const initialRoute = Object.prototype.hasOwnProperty.call(routes, window.location.hash.slice(1))
-        ? window.location.hash.slice(1)
-        : "webdesign";
+      focusFrame.addEventListener("load", () => {
+        focusBody.classList.remove("is-loading");
+      });
 
-      setRoute(initialRoute);
+      focusBack.addEventListener("click", () => {
+        closeRoute();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeRoute();
+        }
+      });
 
       window.addEventListener("hashchange", () => {
-        const nextRoute = window.location.hash.slice(1);
-        if (Object.prototype.hasOwnProperty.call(routes, nextRoute) && nextRoute !== currentRoute) {
-          setRoute(nextRoute);
+        const next = window.location.hash.replace("#", "") || "grid";
+
+        if (next === "grid") {
+          closeRoute({ skipHistory: true });
+          return;
+        }
+
+        if (Object.prototype.hasOwnProperty.call(routes, next)) {
+          if (state.activeRoute !== next) {
+            openRoute(next, { instant: true, skipHistory: true });
+          }
         }
       });
+
+      setPreviewSource("webdesign");
+      deferredPreviews();
+      ensureSkillsReadme();
+
+      const initialHash = window.location.hash.replace("#", "") || "grid";
+      if (Object.prototype.hasOwnProperty.call(routes, initialHash)) {
+        openRoute(initialHash, { instant: true, skipHistory: true });
+      } else if (initialHash !== "grid") {
+        history.replaceState(null, "", "#grid");
+      }
     </script>
   </body>
 </html>
