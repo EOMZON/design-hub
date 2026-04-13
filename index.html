@@ -79,6 +79,14 @@
         font-size: 0.76rem;
       }
 
+      .brand strong {
+        font-family: var(--display);
+        font-size: 1.16rem;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        text-transform: none;
+      }
+
       .top-link {
         display: inline-flex;
         align-items: center;
@@ -96,8 +104,8 @@
       .top-link:focus-visible,
       .route-button:hover,
       .route-button:focus-visible,
-      .route-domain-link:hover,
-      .route-domain-link:focus-visible,
+      .route-open-link:hover,
+      .route-open-link:focus-visible,
       .skills-link:hover,
       .skills-link:focus-visible {
         color: var(--text);
@@ -188,45 +196,40 @@
         border-bottom: 1px solid var(--line);
       }
 
-      .crumb {
-        margin: 0;
+      .viewer-route {
+        display: grid;
+        align-content: center;
+        gap: 2px;
+        min-width: 0;
+      }
+
+      .viewer-kicker {
         color: var(--muted);
-        font-size: 0.75rem;
+        font-size: 0.68rem;
         letter-spacing: 0.12em;
         text-transform: uppercase;
       }
 
-      .crumb strong {
+      .viewer-title {
+        margin: 0;
         color: var(--text);
+        font-family: var(--display);
+        font-size: 1.1rem;
         font-weight: 600;
+        letter-spacing: -0.03em;
+        line-height: 1;
       }
 
-      .route-meta {
+      .route-open-link {
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        min-width: 0;
-      }
-
-      .route-domain-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        min-width: 0;
+        gap: 8px;
         color: var(--muted-strong);
         font-size: 0.76rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
         border-bottom: 1px solid transparent;
         transition: color 120ms ease, border-color 120ms ease;
-      }
-
-      .route-domain {
-        display: inline-block;
-        max-width: 38vw;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
       }
 
       .viewer-stage {
@@ -354,10 +357,6 @@
         .viewer {
           min-height: calc(100vh - var(--header-h) - 65px);
         }
-
-        .route-domain {
-          max-width: 52vw;
-        }
       }
     </style>
   </head>
@@ -389,26 +388,28 @@
           </button>
           <button class="route-button" type="button" data-route="skills">
             <span class="route-name">Skills</span>
-            <span class="route-sub">共享规则</span>
+            <span class="route-sub">复用资产</span>
           </button>
         </div>
       </nav>
 
       <section class="viewer" aria-label="Embedded route view">
         <div class="viewer-topline">
-          <p class="crumb">Design Hub / <strong id="route-label">Webdesign</strong></p>
-          <div class="route-meta">
-            <a
-              class="route-domain-link"
-              id="route-open"
-              href="https://webdesign.zondev.top/browse"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              <span class="route-domain" id="route-domain">webdesign.zondev.top/browse</span>
-              <span aria-hidden="true">↗</span>
-            </a>
+          <div class="viewer-route">
+            <span class="viewer-kicker">Current Route</span>
+            <p class="viewer-title" id="route-label">Webdesign</p>
           </div>
+          <a
+            class="route-open-link"
+            id="route-open"
+            href="https://webdesign.zondev.top/browse"
+            target="_blank"
+            rel="noreferrer noopener"
+            aria-label="Open Webdesign in new tab"
+            title="webdesign.zondev.top/browse"
+          >
+            Open ↗
+          </a>
         </div>
 
         <div class="viewer-stage is-loading" id="viewer-stage">
@@ -473,23 +474,27 @@
           text: [
             "design-skills",
             "",
-            "shared repo for reusable prompt / skill / constraint assets",
+            "把已经选好的方向",
+            "整理成 AI 可以继续调用的资产。",
             "",
-            "use for",
-            "- prompt templates",
-            "- skill files",
-            "- reusable AI design rules",
+            "prompt templates",
+            "skill files",
+            "shared constraints",
             "",
-            "links",
+            "适合",
+            "- 继续喂给 Cursor / Claude",
+            "- 把规则沉淀成可复用 skill",
+            "- 在不同设计站之间共用约束",
+            "",
+            "open",
             "- github: https://github.com/EOMZON/design-skills",
-            "- hub readme: https://github.com/EOMZON/design-hub/blob/main/README.md"
+            "- readme: https://github.com/EOMZON/design-hub/blob/main/README.md"
           ].join("\n")
         }
       };
 
       const routeButtons = Array.from(document.querySelectorAll(".route-button"));
       const routeLabel = document.getElementById("route-label");
-      const routeDomain = document.getElementById("route-domain");
       const routeOpen = document.getElementById("route-open");
       const viewerStage = document.getElementById("viewer-stage");
       const viewerFrame = document.getElementById("viewer-frame");
@@ -532,8 +537,9 @@
         currentRoute = routeId;
         setActiveButton(routeId);
         routeLabel.textContent = route.label;
-        routeDomain.textContent = route.domain;
         routeOpen.href = route.href;
+        routeOpen.title = route.domain;
+        routeOpen.setAttribute("aria-label", `Open ${route.label} in new tab`);
 
         if (route.type === "skills") {
           renderSkills(route);
