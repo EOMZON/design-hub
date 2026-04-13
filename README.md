@@ -1,39 +1,91 @@
 # Design Hub
 
-Static gateway for `design.zondev.top`.
+Static router for `design.zondev.top`.
 
 ## Purpose
 
-- route users to the correct design dimension instead of becoming a second content-heavy atlas
-- explain the boundary between `webdesign`, `ux`, `icon`, and shared `design-skills`
-- provide one stable entry point for future design dimensions without merging them back into one mixed repo
+`design-hub` is no longer a second content site.
 
-## Content boundary
+It should do one job well:
 
-`design-hub` should stay shallow.
+- route people to the right design dimension
+- keep the choice inside one stable entry point
+- let specialized sites carry the deep content
 
-It can contain:
+The current UI therefore uses a sidebar + embedded viewer shell instead of long explanatory sections.
 
-- task-based routing
-- ecosystem overview
-- boundary explanation
-- live / planned status
-- links to shared repositories
+## UI Rule
 
-It should not become:
+The homepage should answer one question first:
 
-- a web-style gallery
-- a selector for website visual families
-- a history / movement encyclopedia
-- a duplicate prompt / skill download surface
+> 我现在该去哪？
 
-Those belong in the specialized sites, especially `webdesign-site`.
+That means:
 
-## Local preview
+- default to task-first routing, not taxonomy explanation
+- keep the user inside the hub when switching between design dimensions
+- keep meta explanation minimal in the UI
+- move boundary and discipline notes into this README instead of the front page
 
-- No build step. Open `index.html` directly or run a quick server such as `python -m http.server 4173` or `npx serve .`
-- Keep `vercel.json` next to the static files so Vercel can deploy the folder as-is
+## Current Routes
+
+### Webdesign
+
+- use for: website visual direction, style families, real references, prompt / skill pickup
+- not for: full UX diagnosis, icon systems, shared asset governance
+- live target: `https://webdesign.zondev.top`
+
+### UX
+
+- use for: information architecture, clarity, user path, service gaps, usability issues
+- not for: style atlas browsing, icon recognition details
+- live target: `https://ux.zondev.top`
+
+### Icon
+
+- use for: app icon, favicon, recognition, black/white legibility, small-size consistency
+- not for: full-page layout, reading rhythm, large content systems
+- live target: `https://icon.zondev.top`
+
+### Design Skills
+
+- use for: reusable skills, prompts, shared constraints, cross-site AI assets
+- not for: acting as a primary browse surface for end users
+- live target: `https://github.com/EOMZON/design-skills`
+
+## Content Boundary
+
+`design-hub` can contain:
+
+- routing UI
+- lightweight route descriptions
+- live links
+- embedded subsite viewing
+- link-outs to GitHub or shared repos
+
+`design-hub` should not become:
+
+- a second style atlas
+- a design history encyclopedia
+- a duplicate prompt download center
+- a long manifesto about why the system is split
+
+## Technical Notes
+
+- static site only; no build step
+- main implementation lives in `index.html`
+- Vercel serves the folder as-is
+- iframe embedding is currently viable for:
+  - `webdesign.zondev.top`
+  - `ux.zondev.top`
+  - `icon.zondev.top`
+- boundary docs stay here so the UI can stay focused on routing
+
+## Local Preview
+
+- open `index.html` directly, or
+- run `python3 -m http.server 4173` inside this repo
 
 ## Deploy
 
-This repo is a static folder. Deploy directly to Vercel or any static host that serves HTML.
+Deploy directly with Vercel from this folder.
