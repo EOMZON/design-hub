@@ -4,82 +4,75 @@ Static index site for `design.zondev.top`.
 
 ## Purpose
 
-This repo is the entry layer for a growing design network.
+`design-hub` now ships the public site under the brand **Design Index**.
 
-It should do one job well:
+The site should do one job well:
 
-- show the current design dimensions at a glance
-- keep room for future dimensions before those sites exist
-- route people into the right specialized surface without turning the homepage into another encyclopedia
+- present the design network as a growing index instead of a fixed portal
+- organize entry by **dimension**, not by historical repo or product naming
+- let visitors scan current live layers first, then enter a focused route
+- leave room for new dimensions without redoing the homepage each time
 
-The live homepage therefore acts as an index, not a fixed four-link hub.
+## UX Rule
 
-## IA Rule
+The homepage should answer three questions quickly:
 
-The homepage should answer these questions in order:
-
-1. what is this system
-2. how is it organized
-3. which dimension should I enter next
+1. What is this?
+2. How is it organized?
+3. Which dimension should I enter?
 
 That means:
 
-- title and tagline must frame the site as a growing index
-- live dimensions and future dimensions should be separated
-- dimension cards should use stable naming that can survive expansion
-- implementation details should stay in this README, not dominate the front page
+- clear site identity first: `Design Index`
+- a short tagline: `Design resources, by dimension.`
+- current live dimensions separated from planned / future dimensions
+- each live card must explain what that dimension collects
+- cards can open a focus view, but the homepage must still work as an index even before any click
 
-## Current Naming
+## Current Live Dimensions
 
-- site name: `Design Index`
-- tagline: `Design resources, by dimension.`
+### Web Visual
 
-### Live dimensions
+- use for: website direction, style families, references, visual prompts
+- live target: `https://webdesign.zondev.top/browse`
 
-- `Web Visual`
-  - live target: `https://webdesign.zondev.top`
-- `Interaction`
-  - live target: `https://ux.zondev.top`
-- `Icon & Assets`
-  - live target: `https://icon.zondev.top`
-- `Methods`
-  - live target: `https://github.com/EOMZON/design-skills`
+### UX & Flow
 
-### Planned dimensions
+- use for: information architecture, user path, service clarity, flow audit
+- live target: `https://ux.zondev.top`
 
-- `Motion`
-- `Brand Systems`
-- `Type Systems`
-- `Image Direction`
+### Icon & Assets
 
-## Content Boundary
+- use for: icon systems, favicon, recognition rules, small-scale assets
+- live target: `https://icon.zondev.top`
 
-`design-hub` can contain:
+### Methods
 
-- index framing
-- live preview cards
-- fullscreen focus viewing
-- planned-dimension placeholders
-- link-outs to GitHub or specialized sites
+- use for: reusable skills, prompts, constraints, workflow assets
+- live target: `https://github.com/EOMZON/design-skills`
 
-`design-hub` should not become:
+## Growth Model
 
-- a duplicate style atlas
-- a second UX knowledge base
-- a full prompt download center
-- a manifesto explaining the whole system every time a user lands
+The homepage should be able to grow without changing its core pattern.
+
+Use two layers:
+
+- `Current Dimensions`: live cards with preview + focus view + external link
+- `Growing Structure`: planned dimensions that are not live yet, but already have a place in the index
+
+This avoids turning the homepage into another fixed 4-slot gateway.
 
 ## Technical Notes
 
 - static site only; no build step
 - main implementation lives in `index.html`
 - Vercel serves the folder as-is
-- iframe embedding is currently viable for:
+- iframe preview is viable for:
   - `webdesign.zondev.top`
   - `ux.zondev.top`
   - `icon.zondev.top`
-- GitHub does not allow iframe embedding for `design-skills`, so `Methods` uses a local README preview plus an external link
-- the homepage is data-driven through a dimension array so future expansion can happen by adding new entries rather than redesigning the shell
+- GitHub does not allow iframe embedding for `design-skills`, so `Methods` uses a local README render + external links
+- focus mode is a frontend shell only; deep content stays in the specialized sites
 
 ## Local Preview
 
