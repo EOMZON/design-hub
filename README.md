@@ -1,74 +1,73 @@
-# Design Hub
+# Design Index
 
-Static snapshot hub for `design.zondev.top`.
+Static index site for `design.zondev.top`.
 
 ## Purpose
 
-`design-hub` is no longer a second content site.
+This repo is the entry layer for a growing design network.
 
 It should do one job well:
 
-- route people to the right design dimension
-- keep the choice inside one stable entry point
-- let specialized sites carry the deep content
+- show the current design dimensions at a glance
+- keep room for future dimensions before those sites exist
+- route people into the right specialized surface without turning the homepage into another encyclopedia
 
-The current UI therefore uses a `2x2` live snapshot grid plus a fullscreen focus layer instead of long explanatory sections.
+The live homepage therefore acts as an index, not a fixed four-link hub.
 
-## UI Rule
+## IA Rule
 
-The homepage should answer one question first:
+The homepage should answer these questions in order:
 
-> 我现在该去哪？
+1. what is this system
+2. how is it organized
+3. which dimension should I enter next
 
 That means:
 
-- show all major routes at once before asking the user to commit to one
-- let people judge by live content, not by long route descriptions
-- keep the user inside the hub when switching into focus mode
-- move boundary and discipline notes into this README instead of the front page
+- title and tagline must frame the site as a growing index
+- live dimensions and future dimensions should be separated
+- dimension cards should use stable naming that can survive expansion
+- implementation details should stay in this README, not dominate the front page
 
-## Current Routes
+## Current Naming
 
-### Webdesign
+- site name: `Design Index`
+- tagline: `Design resources, by dimension.`
 
-- use for: website visual direction, style families, real references, prompt / skill pickup
-- not for: full UX diagnosis, icon systems, shared asset governance
-- live target: `https://webdesign.zondev.top`
+### Live dimensions
 
-### UX
+- `Web Visual`
+  - live target: `https://webdesign.zondev.top`
+- `Interaction`
+  - live target: `https://ux.zondev.top`
+- `Icon & Assets`
+  - live target: `https://icon.zondev.top`
+- `Methods`
+  - live target: `https://github.com/EOMZON/design-skills`
 
-- use for: information architecture, clarity, user path, service gaps, usability issues
-- not for: style atlas browsing, icon recognition details
-- live target: `https://ux.zondev.top`
+### Planned dimensions
 
-### Icon
-
-- use for: app icon, favicon, recognition, black/white legibility, small-size consistency
-- not for: full-page layout, reading rhythm, large content systems
-- live target: `https://icon.zondev.top`
-
-### Design Skills
-
-- use for: reusable skills, prompts, shared constraints, cross-site AI assets
-- not for: acting as a primary browse surface for end users
-- live target: `https://github.com/EOMZON/design-skills`
+- `Motion`
+- `Brand Systems`
+- `Type Systems`
+- `Image Direction`
 
 ## Content Boundary
 
 `design-hub` can contain:
 
-- routing UI
-- live snapshot previews
+- index framing
+- live preview cards
 - fullscreen focus viewing
-- lightweight route descriptions
-- link-outs to GitHub or shared repos
+- planned-dimension placeholders
+- link-outs to GitHub or specialized sites
 
 `design-hub` should not become:
 
-- a second style atlas
-- a design history encyclopedia
-- a duplicate prompt download center
-- a long manifesto about why the system is split
+- a duplicate style atlas
+- a second UX knowledge base
+- a full prompt download center
+- a manifesto explaining the whole system every time a user lands
 
 ## Technical Notes
 
@@ -79,8 +78,8 @@ That means:
   - `webdesign.zondev.top`
   - `ux.zondev.top`
   - `icon.zondev.top`
-- GitHub does not allow iframe embedding for `design-skills`, so the fourth tile uses a local README render + external link
-- boundary docs stay here so the UI can stay focused on routing
+- GitHub does not allow iframe embedding for `design-skills`, so `Methods` uses a local README preview plus an external link
+- the homepage is data-driven through a dimension array so future expansion can happen by adding new entries rather than redesigning the shell
 
 ## Local Preview
 

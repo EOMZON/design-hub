@@ -3,29 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Design Hub</title>
+    <title>Design Index</title>
     <meta
       name="description"
-      content="Design Hub 以 2x2 实时快照概览 webdesign、ux、icon 与 skills，点击任一窗口进入全屏专注视图。"
+      content="Design resources, by dimension. A growing index of web visual, interaction, icon, and method surfaces."
     />
     <style>
       :root {
         color-scheme: dark;
         --bg: #000000;
+        --panel: #050505;
+        --panel-soft: #0a0a0a;
         --text: #ffffff;
-        --muted: #8a8a8a;
-        --line: #333333;
-        --line-strong: #5a5a5a;
-        --panel: #060606;
-        --bar-h: 32px;
-        --focus-bar-h: 40px;
-        --mono: "SFMono-Regular", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+        --muted: #969696;
+        --line: #2f2f2f;
+        --line-strong: #5f5f5f;
+        --display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
         --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --mono: "SFMono-Regular", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
         --ease: 220ms ease;
       }
 
       * {
         box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
       }
 
       html,
@@ -37,7 +41,7 @@
         font-family: var(--sans);
       }
 
-      body {
+      body.is-focus-mode {
         overflow: hidden;
       }
 
@@ -58,104 +62,327 @@
         cursor: pointer;
       }
 
-      .hub-shell {
-        min-height: 100dvh;
-        background: var(--bg);
+      .site-bar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 18px 24px 16px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.94);
       }
 
-      .snapshot-grid {
+      .brand {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        grid-template-rows: repeat(2, minmax(0, 1fr));
+        gap: 4px;
+        min-width: 0;
+      }
+
+      .brand-name {
+        font-family: var(--display);
+        font-size: clamp(1.7rem, 2vw, 2.1rem);
+        line-height: 0.94;
+        letter-spacing: -0.04em;
+      }
+
+      .brand-tagline {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .site-nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 12px 18px;
+      }
+
+      .site-nav a {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.73rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        border-bottom: 1px solid transparent;
+      }
+
+      .site-nav a:hover,
+      .site-nav a:focus-visible {
+        color: var(--text);
+        border-color: currentColor;
+      }
+
+      .page {
+        padding: 32px 24px 44px;
+      }
+
+      .page-shell {
+        display: grid;
+        gap: 32px;
+        max-width: 1480px;
+        margin: 0 auto;
+      }
+
+      .cover {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.95fr);
         gap: 1px;
-        min-height: 100dvh;
+        border: 1px solid var(--line);
         background: var(--line);
       }
 
-      .snapshot-grid.is-transitioning .snapshot-card {
-        opacity: 0.2;
+      .cover-copy,
+      .cover-meta {
+        min-width: 0;
+        padding: 28px 24px 26px;
+        background: var(--panel);
       }
 
-      .snapshot-grid.is-transitioning .snapshot-card.is-origin {
+      .cover-kicker,
+      .section-kicker,
+      .dimension-status,
+      .planned-status {
+        margin: 0;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .cover-title {
+        max-width: 11ch;
+        margin: 14px 0 10px;
+        font-family: var(--display);
+        font-size: clamp(3.6rem, 9vw, 7.6rem);
+        line-height: 0.88;
+        letter-spacing: -0.07em;
+      }
+
+      .cover-subtitle {
+        max-width: 42rem;
+        margin: 0 0 20px;
+        font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+        line-height: 1.55;
+      }
+
+      .cover-note {
+        max-width: 36rem;
+        margin: 0;
+        color: #c9c9c9;
+        font-size: 0.98rem;
+        line-height: 1.74;
+      }
+
+      .cover-meta {
+        display: grid;
+        align-content: space-between;
+        gap: 18px;
+      }
+
+      .meta-card {
+        display: grid;
+        gap: 10px;
+        padding-top: 2px;
+      }
+
+      .meta-value {
+        margin: 0;
+        font-family: var(--display);
+        font-size: clamp(1.9rem, 3vw, 3rem);
+        line-height: 0.94;
+        letter-spacing: -0.05em;
+      }
+
+      .meta-copy {
+        margin: 0;
+        color: #cbcbcb;
+        font-size: 0.95rem;
+        line-height: 1.7;
+      }
+
+      .meta-card + .meta-card {
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+      }
+
+      .section-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 32rem);
+        gap: 24px;
+        align-items: end;
+      }
+
+      .section-title {
+        margin: 10px 0 0;
+        font-family: var(--display);
+        font-size: clamp(2rem, 3vw, 3.1rem);
+        line-height: 0.96;
+        letter-spacing: -0.05em;
+      }
+
+      .section-copy {
+        margin: 0;
+        color: #c2c2c2;
+        font-size: 0.96rem;
+        line-height: 1.7;
+      }
+
+      .dimensions-grid {
+        display: grid;
+        gap: 1px;
+        border: 1px solid var(--line);
+        background: var(--line);
+      }
+
+      #live-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      #planned-grid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+
+      .dimension-card {
+        position: relative;
+        display: grid;
+        grid-template-rows: auto auto auto minmax(220px, 1fr) auto;
+        gap: 18px;
+        min-width: 0;
+        padding: 22px 22px 20px;
+        background: var(--panel);
+      }
+
+      .dimension-card--live {
+        cursor: pointer;
+        transition: background 140ms ease, outline-color 140ms ease, opacity var(--ease);
+        outline: 1px solid transparent;
+        outline-offset: -1px;
+      }
+
+      .dimension-card--live:hover,
+      .dimension-card--live:focus-visible,
+      .dimension-card--live.is-origin {
+        outline-color: var(--text);
+        background: #070707;
+      }
+
+      .dimension-card--live.is-origin .dimension-topline,
+      .dimension-card--live:hover .dimension-topline,
+      .dimension-card--live:focus-visible .dimension-topline {
+        color: #000000;
+        background: var(--text);
+      }
+
+      .dimensions-grid.is-transitioning .dimension-card--live {
+        opacity: 0.28;
+      }
+
+      .dimensions-grid.is-transitioning .dimension-card--live.is-origin {
         opacity: 1;
       }
 
-      .snapshot-card {
-        position: relative;
-        display: grid;
-        grid-template-rows: var(--bar-h) minmax(0, 1fr);
-        min-width: 0;
-        min-height: 0;
-        overflow: hidden;
-        background: var(--panel);
-        cursor: pointer;
-        outline: 1px solid transparent;
-        outline-offset: -1px;
-        transition: outline-color 120ms ease, opacity var(--ease);
+      .dimension-card--planned {
+        grid-template-rows: auto auto auto;
+        gap: 16px;
+        background: var(--panel-soft);
       }
 
-      .snapshot-card:hover,
-      .snapshot-card:focus-visible,
-      .snapshot-card.is-origin {
-        outline-color: var(--text);
-      }
-
-      .snapshot-card:focus-visible {
-        outline-color: var(--text);
-      }
-
-      .snapshot-card:hover .card-topline,
-      .snapshot-card:focus-visible .card-topline,
-      .snapshot-card.is-origin .card-topline {
-        background: var(--text);
-        color: #000000;
-      }
-
-      .card-topline {
-        position: relative;
-        z-index: 2;
+      .dimension-topline {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        padding: 0 12px;
+        padding-bottom: 14px;
         border-bottom: 1px solid var(--line);
-        background: #000000;
         color: var(--text);
-        transition: background 120ms ease, color 120ms ease;
+        background: transparent;
+        transition: color 120ms ease, background 120ms ease;
       }
 
-      .card-title {
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+      .dimension-open,
+      .dimension-state,
+      .dimension-domain {
+        color: inherit;
         font-family: var(--mono);
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         letter-spacing: 0.12em;
         text-transform: uppercase;
       }
 
-      .card-open {
+      .dimension-open {
         position: relative;
-        z-index: 3;
-        flex: none;
-        color: currentColor;
+        z-index: 2;
+        border-bottom: 1px solid transparent;
+      }
+
+      .dimension-open:hover,
+      .dimension-open:focus-visible {
+        border-color: currentColor;
+      }
+
+      .dimension-heading {
+        display: grid;
+        gap: 8px;
+      }
+
+      .dimension-title {
+        margin: 0;
+        font-family: var(--display);
+        font-size: clamp(2rem, 3vw, 3.2rem);
+        line-height: 0.92;
+        letter-spacing: -0.05em;
+      }
+
+      .dimension-local {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+        letter-spacing: 0.04em;
+      }
+
+      .dimension-description,
+      .planned-copy {
+        margin: 0;
+        color: #cbcbcb;
+        font-size: 0.96rem;
+        line-height: 1.74;
+      }
+
+      .dimension-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .dimension-tags li {
+        padding: 7px 10px 6px;
+        border: 1px solid var(--line);
+        color: var(--muted);
         font-family: var(--mono);
         font-size: 0.72rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        opacity: 0.88;
       }
 
-      .card-stage {
+      .dimension-stage {
         position: relative;
-        min-height: 0;
         overflow: hidden;
+        min-height: 0;
+        border: 1px solid var(--line);
         background: #000000;
       }
 
-      .card-loader {
+      .dimension-loader {
         position: absolute;
         inset: 0;
         z-index: 3;
@@ -172,31 +399,31 @@
         transition: opacity 140ms ease;
       }
 
-      .snapshot-card.is-loaded .card-loader {
+      .dimension-card.is-loaded .dimension-loader {
         opacity: 0;
       }
 
-      .snapshot-hit {
+      .dimension-hit {
         position: absolute;
         inset: 0;
         z-index: 2;
       }
 
-      .snapshot-viewport {
+      .preview-viewport {
         position: absolute;
         inset: 0;
         overflow: hidden;
         background: #000000;
       }
 
-      .snapshot-canvas {
+      .preview-canvas {
         width: 200%;
         height: 200%;
         transform: scale(0.5);
         transform-origin: 0 0;
       }
 
-      .snapshot-frame {
+      .preview-frame {
         width: 100%;
         height: 100%;
         border: 0;
@@ -208,35 +435,49 @@
         position: absolute;
         inset: 0;
         overflow: hidden;
-        padding: 18px 16px 16px;
+        padding: 18px;
         background:
-          linear-gradient(to bottom, rgba(0, 0, 0, 0) 72%, rgba(0, 0, 0, 0.96) 100%);
-      }
-
-      .skills-preview::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 28%),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.02), transparent 24%),
           repeating-linear-gradient(
             to bottom,
-            transparent 0 21px,
-            rgba(255, 255, 255, 0.05) 21px 22px
-          );
-        opacity: 0.28;
-        pointer-events: none;
+            rgba(255, 255, 255, 0.02) 0 1px,
+            transparent 1px 24px
+          ),
+          #000000;
       }
 
       .skills-preview pre {
-        position: relative;
-        z-index: 1;
         margin: 0;
         color: var(--text);
         font-family: var(--mono);
-        font-size: 0.78rem;
-        line-height: 1.62;
+        font-size: 0.77rem;
+        line-height: 1.64;
         white-space: pre-wrap;
+      }
+
+      .dimension-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .dimension-foot span:last-child {
+        text-align: right;
+      }
+
+      .planned-note {
+        margin: 0;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
       .focus-shell {
@@ -285,11 +526,10 @@
         grid-template-columns: auto 1fr auto;
         align-items: center;
         gap: 12px;
-        height: var(--focus-bar-h);
+        height: 42px;
         padding: 0 12px;
         border-bottom: 1px solid var(--line);
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(16px);
+        background: rgba(0, 0, 0, 0.9);
       }
 
       .focus-back,
@@ -321,7 +561,7 @@
 
       .focus-body {
         position: relative;
-        height: calc(100% - var(--focus-bar-h));
+        height: calc(100% - 42px);
         background: #000000;
       }
 
@@ -347,7 +587,7 @@
       }
 
       .focus-frame,
-      .focus-skills {
+      .focus-methods {
         position: absolute;
         inset: 0;
         width: 100%;
@@ -357,27 +597,27 @@
       }
 
       .focus-frame.is-hidden,
-      .focus-skills.is-hidden {
+      .focus-methods.is-hidden {
         display: none;
       }
 
-      .focus-skills {
+      .focus-methods {
         overflow: auto;
-        padding: 30px 28px 32px;
+        padding: 34px 28px 32px;
       }
 
-      .focus-skills-shell {
+      .focus-methods-shell {
         display: grid;
         gap: 24px;
         max-width: 980px;
       }
 
-      .focus-skills-intro {
+      .focus-methods-intro {
         display: grid;
         gap: 8px;
       }
 
-      .focus-skills-kicker {
+      .focus-methods-kicker {
         color: var(--muted);
         font-family: var(--mono);
         font-size: 0.72rem;
@@ -385,28 +625,29 @@
         text-transform: uppercase;
       }
 
-      .focus-skills-title {
+      .focus-methods-title {
         margin: 0;
-        font-size: clamp(2rem, 4vw, 3.5rem);
-        line-height: 0.94;
-        letter-spacing: -0.04em;
+        font-family: var(--display);
+        font-size: clamp(2.6rem, 5vw, 4rem);
+        line-height: 0.9;
+        letter-spacing: -0.05em;
       }
 
-      .focus-skills-copy {
-        max-width: 44rem;
+      .focus-methods-copy {
+        max-width: 42rem;
         margin: 0;
         color: #c7c7c7;
         font-size: 0.98rem;
-        line-height: 1.7;
+        line-height: 1.72;
       }
 
-      .focus-skills-links {
+      .focus-methods-links {
         display: flex;
         flex-wrap: wrap;
         gap: 12px 18px;
       }
 
-      .focus-skills-links a {
+      .focus-methods-links a {
         color: var(--text);
         font-family: var(--mono);
         font-size: 0.78rem;
@@ -415,12 +656,12 @@
         border-bottom: 1px solid transparent;
       }
 
-      .focus-skills-links a:hover,
-      .focus-skills-links a:focus-visible {
+      .focus-methods-links a:hover,
+      .focus-methods-links a:focus-visible {
         border-color: currentColor;
       }
 
-      .focus-skills-readme {
+      .focus-methods-readme {
         margin: 0;
         padding: 22px 20px;
         border: 1px solid var(--line);
@@ -432,40 +673,36 @@
         white-space: pre-wrap;
       }
 
-      .focus-shell[data-active="skills"] .focus-open {
-        content-visibility: auto;
-      }
-
-      .hub-note {
-        position: fixed;
-        left: 12px;
-        bottom: 12px;
-        z-index: 5;
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: 0.68rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        pointer-events: none;
-        mix-blend-mode: difference;
-      }
-
-      @media (max-width: 840px) {
-        body {
-          overflow: auto;
-        }
-
-        .snapshot-grid {
+      @media (max-width: 1040px) {
+        .cover,
+        .section-head {
           grid-template-columns: 1fr;
-          grid-template-rows: none;
-          min-height: auto;
+        }
+      }
+
+      @media (max-width: 780px) {
+        .site-bar {
+          align-items: flex-start;
+          flex-direction: column;
+          padding: 16px 18px 14px;
         }
 
-        .snapshot-card {
-          min-height: 40vh;
+        .page {
+          padding: 22px 18px 32px;
         }
 
-        .snapshot-canvas {
+        .cover-copy,
+        .cover-meta,
+        .dimension-card {
+          padding: 18px 18px 16px;
+        }
+
+        #live-grid,
+        #planned-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .preview-canvas {
           width: 300%;
           height: 300%;
           transform: scale(0.333333);
@@ -484,182 +721,97 @@
           display: none;
         }
 
-        .focus-skills {
+        .focus-methods {
           padding: 22px 18px 24px;
         }
 
-        .focus-skills-readme {
+        .focus-methods-readme {
           padding: 18px 16px;
           font-size: 0.84rem;
-        }
-
-        .hub-note {
-          display: none;
         }
       }
     </style>
   </head>
   <body>
-    <main class="hub-shell">
-      <section class="snapshot-grid" id="snapshot-grid" aria-label="Design Hub overview">
-        <article
-          class="snapshot-card"
-          data-route="webdesign"
-          role="button"
-          tabindex="0"
-          aria-label="Open Webdesign focus view"
-        >
-          <div class="card-topline">
-            <span class="card-title">Webdesign</span>
-            <a
-              class="card-open"
-              href="https://webdesign.zondev.top/browse"
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="Open Webdesign in new tab"
-            >
-              ↗
-            </a>
-          </div>
-          <div class="card-stage">
-            <div class="card-loader">Loading</div>
-            <div class="snapshot-hit" aria-hidden="true"></div>
-            <div class="snapshot-viewport">
-              <div class="snapshot-canvas">
-                <iframe
-                  class="snapshot-frame"
-                  title="Webdesign snapshot"
-                  data-preview-frame="webdesign"
-                  src="https://webdesign.zondev.top/browse"
-                  loading="eager"
-                ></iframe>
-              </div>
-            </div>
-          </div>
-        </article>
+    <header class="site-bar">
+      <a class="brand" href="#top" aria-label="Back to top">
+        <span class="brand-name">Design Index</span>
+        <span class="brand-tagline">Design resources, by dimension.</span>
+      </a>
+      <nav class="site-nav" aria-label="Site sections">
+        <a href="#dimensions">Live</a>
+        <a href="#expanding">Expanding</a>
+        <a href="https://github.com/EOMZON/design-skills" target="_blank" rel="noreferrer noopener">
+          GitHub ↗
+        </a>
+      </nav>
+    </header>
 
-        <article
-          class="snapshot-card"
-          data-route="ux"
-          role="button"
-          tabindex="0"
-          aria-label="Open UX focus view"
-        >
-          <div class="card-topline">
-            <span class="card-title">UX</span>
-            <a
-              class="card-open"
-              href="https://ux.zondev.top"
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="Open UX in new tab"
-            >
-              ↗
-            </a>
+    <main class="page">
+      <div class="page-shell">
+        <section class="cover" id="top" aria-label="Design Index introduction">
+          <div class="cover-copy">
+            <p class="cover-kicker">Growing Design Network</p>
+            <h1 class="cover-title">Design Index</h1>
+            <p class="cover-subtitle">
+              A growing personal index of design resources, organized by dimension.
+            </p>
+            <p class="cover-note">
+              从这里先判断你需要的是网页视觉、交互路径、图标识别还是方法资产。每个 live
+              维度都通向一个专门站点；索引页只负责让这张网络在以后继续扩张时依然清楚。
+            </p>
           </div>
-          <div class="card-stage">
-            <div class="card-loader">Loading</div>
-            <div class="snapshot-hit" aria-hidden="true"></div>
-            <div class="snapshot-viewport">
-              <div class="snapshot-canvas">
-                <iframe
-                  class="snapshot-frame"
-                  title="UX snapshot"
-                  data-preview-frame="ux"
-                  loading="lazy"
-                ></iframe>
-              </div>
-            </div>
-          </div>
-        </article>
+          <div class="cover-meta" id="cover-meta"></div>
+        </section>
 
-        <article
-          class="snapshot-card"
-          data-route="icon"
-          role="button"
-          tabindex="0"
-          aria-label="Open Icon focus view"
-        >
-          <div class="card-topline">
-            <span class="card-title">Icon</span>
-            <a
-              class="card-open"
-              href="https://icon.zondev.top"
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="Open Icon in new tab"
-            >
-              ↗
-            </a>
+        <section class="section-head" id="dimensions" aria-label="Live dimensions intro">
+          <div>
+            <p class="section-kicker">Current</p>
+            <h2 class="section-title">Live Dimensions</h2>
           </div>
-          <div class="card-stage">
-            <div class="card-loader">Loading</div>
-            <div class="snapshot-hit" aria-hidden="true"></div>
-            <div class="snapshot-viewport">
-              <div class="snapshot-canvas">
-                <iframe
-                  class="snapshot-frame"
-                  title="Icon snapshot"
-                  data-preview-frame="icon"
-                  loading="lazy"
-                ></iframe>
-              </div>
-            </div>
-          </div>
-        </article>
+          <p class="section-copy">
+            先看维度，再进子站。每张卡片保留一个可判断内容方向的小预览，点击后进入全屏 focus
+            视图；外链始终保留给需要直接打开完整站点的人。
+          </p>
+        </section>
 
-        <article
-          class="snapshot-card"
-          data-route="skills"
-          role="button"
-          tabindex="0"
-          aria-label="Open Skills focus view"
-        >
-          <div class="card-topline">
-            <span class="card-title">Skills</span>
-            <a
-              class="card-open"
-              href="https://github.com/EOMZON/design-skills"
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label="Open Skills repo in new tab"
-            >
-              ↗
-            </a>
+        <section class="dimensions-grid" id="live-grid" aria-label="Live dimensions"></section>
+
+        <section class="section-head" id="expanding" aria-label="Expanding dimensions intro">
+          <div>
+            <p class="section-kicker">Expanding</p>
+            <h2 class="section-title">Next Dimensions</h2>
           </div>
-          <div class="card-stage">
-            <div class="card-loader" id="skills-preview-loader">Loading</div>
-            <div class="snapshot-hit" aria-hidden="true"></div>
-            <div class="skills-preview">
-              <pre id="skills-preview-copy">Loading README snapshot…</pre>
-            </div>
-          </div>
-        </article>
-      </section>
+          <p class="section-copy">
+            这些维度先在索引中占位，避免首页把“当前 4 个入口”误写成“最终结构”。以后新增站点时，只需要补这张索引，不必再改整体语言。
+          </p>
+        </section>
+
+        <section class="dimensions-grid" id="planned-grid" aria-label="Planned dimensions"></section>
+      </div>
     </main>
-
-    <div class="hub-note">2x2 live snapshot / click to focus</div>
 
     <section class="focus-shell" id="focus-shell" hidden aria-label="Focused route view">
       <div class="focus-topline">
-        <button class="focus-back" id="focus-back" type="button">← Design Hub</button>
-        <p class="focus-title" id="focus-title">Webdesign</p>
+        <button class="focus-back" id="focus-back" type="button">← Back to Index</button>
+        <p class="focus-title" id="focus-title">Web Visual</p>
         <a class="focus-open" id="focus-open" href="/" target="_blank" rel="noreferrer noopener">
-          在新标签打开 ↗
+          Open in New Tab ↗
         </a>
       </div>
       <div class="focus-body" id="focus-body">
         <div class="focus-loader" id="focus-loader">Loading</div>
-        <iframe class="focus-frame is-hidden" id="focus-frame" title="Focused route view"></iframe>
-        <article class="focus-skills is-hidden" id="focus-skills">
-          <div class="focus-skills-shell">
-            <div class="focus-skills-intro">
-              <span class="focus-skills-kicker">Design Assets</span>
-              <h1 class="focus-skills-title">Skills</h1>
-              <p class="focus-skills-copy">
-                这里不做 GitHub 仓库页的硬嵌入，而是直接把可复用 skill / prompt / constraint 的 README 摘要铺开。
+        <iframe class="focus-frame is-hidden" id="focus-frame" title="Focused dimension view"></iframe>
+        <article class="focus-methods is-hidden" id="focus-methods">
+          <div class="focus-methods-shell">
+            <div class="focus-methods-intro">
+              <span class="focus-methods-kicker">Methods</span>
+              <h1 class="focus-methods-title">Reusable Assets</h1>
+              <p class="focus-methods-copy">
+                这里展示的是可复用的 skill / prompt / constraint 资产预览，而不是硬嵌 GitHub
+                仓库界面。需要完整索引时，直接打开外部仓库。
               </p>
-              <div class="focus-skills-links">
+              <div class="focus-methods-links">
                 <a href="https://github.com/EOMZON/design-skills" target="_blank" rel="noreferrer noopener">
                   GitHub Repo ↗
                 </a>
@@ -672,77 +824,275 @@
                 </a>
               </div>
             </div>
-            <pre class="focus-skills-readme" id="focus-skills-copy">Loading README…</pre>
+            <pre class="focus-methods-readme" id="focus-methods-copy">Loading README…</pre>
           </div>
         </article>
       </div>
     </section>
 
     <script>
-      const routes = {
-        webdesign: {
-          label: "Webdesign",
+      const dimensions = [
+        {
+          id: "web-visual",
+          title: "Web Visual",
+          localTitle: "网页视觉",
+          description: "Website styles, references, demos, and prompt pickup.",
+          tags: ["Styles", "References", "Prompts"],
+          status: "live",
+          statusLabel: "Live",
           href: "https://webdesign.zondev.top/browse",
+          previewSrc: "https://webdesign.zondev.top/browse",
+          domainLabel: "webdesign.zondev.top",
+          modeLabel: "Focus in place",
           type: "iframe",
           eager: true
         },
-        ux: {
-          label: "UX",
+        {
+          id: "interaction",
+          title: "Interaction",
+          localTitle: "交互与路径",
+          description: "Information architecture, flows, clarity, and service review.",
+          tags: ["Flows", "IA", "Clarity"],
+          status: "live",
+          statusLabel: "Live",
           href: "https://ux.zondev.top",
-          type: "iframe"
+          previewSrc: "https://ux.zondev.top",
+          domainLabel: "ux.zondev.top",
+          modeLabel: "Focus in place",
+          type: "iframe",
+          eager: true
         },
-        icon: {
-          label: "Icon",
+        {
+          id: "icon-assets",
+          title: "Icon & Assets",
+          localTitle: "图标与资产",
+          description: "Recognition systems, app icons, favicons, and small-size checks.",
+          tags: ["Icons", "Favicons", "Recognition"],
+          status: "live",
+          statusLabel: "Live",
           href: "https://icon.zondev.top",
+          previewSrc: "https://icon.zondev.top",
+          domainLabel: "icon.zondev.top",
+          modeLabel: "Focus in place",
           type: "iframe"
         },
-        skills: {
-          label: "Skills",
+        {
+          id: "methods",
+          title: "Methods",
+          localTitle: "方法与资产",
+          description: "Reusable skills, prompts, constraints, and workflow building blocks.",
+          tags: ["Skills", "Prompts", "Workflows"],
+          status: "live",
+          statusLabel: "Live",
           href: "https://github.com/EOMZON/design-skills",
-          type: "skills",
-          readmeUrl: "https://raw.githubusercontent.com/EOMZON/design-skills/main/README.md"
+          readmeUrl: "https://raw.githubusercontent.com/EOMZON/design-skills/main/README.md",
+          domainLabel: "design-skills",
+          modeLabel: "Preview in place",
+          type: "methods"
+        },
+        {
+          id: "motion",
+          title: "Motion",
+          localTitle: "动效与节奏",
+          description: "Transitions, timing, staging, and kinetic language across interfaces.",
+          tags: ["Timing", "Transitions", "Rhythm"],
+          status: "planned",
+          statusLabel: "Planned",
+          note: "Reserved for a future dedicated site."
+        },
+        {
+          id: "brand-systems",
+          title: "Brand Systems",
+          localTitle: "品牌与系统",
+          description: "Identity language, grid logic, tone, and reusable brand surfaces.",
+          tags: ["Identity", "Systems", "Tone"],
+          status: "planned",
+          statusLabel: "Planned",
+          note: "Reserved for a future dedicated site."
+        },
+        {
+          id: "type-systems",
+          title: "Type Systems",
+          localTitle: "字体与排印",
+          description: "Type pairing, hierarchy, spacing, and editorial reading systems.",
+          tags: ["Type", "Spacing", "Editorial"],
+          status: "planned",
+          statusLabel: "Planned",
+          note: "Reserved for a future dedicated site."
+        },
+        {
+          id: "image-direction",
+          title: "Image Direction",
+          localTitle: "图像与方向",
+          description: "Illustration, photography, art direction, and image-led reference systems.",
+          tags: ["Illustration", "Photo", "Art Direction"],
+          status: "planned",
+          statusLabel: "Planned",
+          note: "Reserved for a future dedicated site."
         }
-      };
+      ];
 
-      const snapshotGrid = document.getElementById("snapshot-grid");
-      const cards = Array.from(document.querySelectorAll(".snapshot-card"));
-      const previewFrames = Array.from(document.querySelectorAll("[data-preview-frame]"));
+      const liveDimensions = dimensions.filter((item) => item.status === "live");
+      const plannedDimensions = dimensions.filter((item) => item.status === "planned");
+      const routeMap = Object.fromEntries(liveDimensions.map((item) => [item.id, item]));
+
+      const liveGrid = document.getElementById("live-grid");
+      const plannedGrid = document.getElementById("planned-grid");
+      const coverMeta = document.getElementById("cover-meta");
       const focusShell = document.getElementById("focus-shell");
       const focusBody = document.getElementById("focus-body");
       const focusBack = document.getElementById("focus-back");
       const focusTitle = document.getElementById("focus-title");
       const focusOpen = document.getElementById("focus-open");
-      const focusLoader = document.getElementById("focus-loader");
       const focusFrame = document.getElementById("focus-frame");
-      const focusSkills = document.getElementById("focus-skills");
-      const skillsPreviewCopy = document.getElementById("skills-preview-copy");
-      const skillsPreviewLoader = document.getElementById("skills-preview-loader");
-      const focusSkillsCopy = document.getElementById("focus-skills-copy");
+      const focusMethods = document.getElementById("focus-methods");
+      const focusMethodsCopy = document.getElementById("focus-methods-copy");
 
       const state = {
         activeRoute: null,
         mode: "grid",
-        loadedMap: {
-          webdesign: false,
-          ux: false,
-          icon: false,
-          skills: false
-        },
+        loadedMap: Object.fromEntries(liveDimensions.map((item) => [item.id, false])),
         readmeText: "",
         readmePromise: null
       };
 
+      function createMetaCard(label, value, copy) {
+        const article = document.createElement("article");
+        article.className = "meta-card";
+        article.innerHTML = `
+          <p class="cover-kicker">${label}</p>
+          <p class="meta-value">${value}</p>
+          <p class="meta-copy">${copy}</p>
+        `;
+        return article;
+      }
+
+      function createTagList(tags) {
+        const list = document.createElement("ul");
+        list.className = "dimension-tags";
+        tags.forEach((tag) => {
+          const item = document.createElement("li");
+          item.textContent = tag;
+          list.appendChild(item);
+        });
+        return list;
+      }
+
+      function createLiveCard(route) {
+        const card = document.createElement("article");
+        card.className = "dimension-card dimension-card--live";
+        card.dataset.route = route.id;
+        card.setAttribute("role", "button");
+        card.tabIndex = 0;
+        card.setAttribute("aria-label", `Open ${route.title} focus view`);
+
+        const topline = document.createElement("div");
+        topline.className = "dimension-topline";
+        topline.innerHTML = `
+          <p class="dimension-status">${route.statusLabel}</p>
+          <a
+            class="dimension-open"
+            href="${route.href}"
+            target="_blank"
+            rel="noreferrer noopener"
+            aria-label="Open ${route.title} in new tab"
+          >
+            ↗
+          </a>
+        `;
+
+        const heading = document.createElement("div");
+        heading.className = "dimension-heading";
+        heading.innerHTML = `
+          <h3 class="dimension-title">${route.title}</h3>
+          <p class="dimension-local">${route.localTitle}</p>
+        `;
+
+        const description = document.createElement("p");
+        description.className = "dimension-description";
+        description.textContent = route.description;
+
+        const stage = document.createElement("div");
+        stage.className = "dimension-stage";
+
+        const loader = document.createElement("div");
+        loader.className = "dimension-loader";
+        loader.textContent = "Loading";
+        stage.appendChild(loader);
+
+        const hit = document.createElement("div");
+        hit.className = "dimension-hit";
+        hit.setAttribute("aria-hidden", "true");
+        stage.appendChild(hit);
+
+        if (route.type === "methods") {
+          const preview = document.createElement("div");
+          preview.className = "skills-preview";
+          preview.innerHTML = `<pre id="methods-preview-copy">Loading README snapshot…</pre>`;
+          stage.appendChild(preview);
+        } else {
+          const viewport = document.createElement("div");
+          viewport.className = "preview-viewport";
+          viewport.innerHTML = `
+            <div class="preview-canvas">
+              <iframe
+                class="preview-frame"
+                title="${route.title} snapshot"
+                data-preview-frame="${route.id}"
+                loading="${route.eager ? "eager" : "lazy"}"
+              ></iframe>
+            </div>
+          `;
+          stage.appendChild(viewport);
+        }
+
+        const foot = document.createElement("div");
+        foot.className = "dimension-foot";
+        foot.innerHTML = `
+          <span class="dimension-state">${route.modeLabel}</span>
+          <span class="dimension-domain">${route.domainLabel}</span>
+        `;
+
+        card.appendChild(topline);
+        card.appendChild(heading);
+        card.appendChild(description);
+        card.appendChild(createTagList(route.tags));
+        card.appendChild(stage);
+        card.appendChild(foot);
+        return card;
+      }
+
+      function createPlannedCard(item) {
+        const card = document.createElement("article");
+        card.className = "dimension-card dimension-card--planned";
+        card.innerHTML = `
+          <div class="dimension-topline">
+            <p class="planned-status">${item.statusLabel}</p>
+            <span class="dimension-domain">Reserved</span>
+          </div>
+          <div class="dimension-heading">
+            <h3 class="dimension-title">${item.title}</h3>
+            <p class="dimension-local">${item.localTitle}</p>
+          </div>
+          <p class="planned-copy">${item.description}</p>
+          <div></div>
+          <p class="planned-note">${item.note}</p>
+        `;
+        card.insertBefore(createTagList(item.tags), card.children[3]);
+        return card;
+      }
+
       function markLoaded(routeId) {
         state.loadedMap[routeId] = true;
-        const card = document.querySelector(`.snapshot-card[data-route="${routeId}"]`);
+        const card = liveGrid.querySelector(`.dimension-card[data-route="${routeId}"]`);
         if (card) {
           card.classList.add("is-loaded");
         }
       }
 
       function setPreviewSource(routeId) {
-        const frame = document.querySelector(`[data-preview-frame="${routeId}"]`);
-        const route = routes[routeId];
+        const frame = liveGrid.querySelector(`[data-preview-frame="${routeId}"]`);
+        const route = routeMap[routeId];
         if (!frame || !route || route.type !== "iframe" || frame.dataset.loaded === "true") {
           return;
         }
@@ -755,13 +1105,15 @@
           },
           { once: true }
         );
-        frame.src = route.href;
+        frame.src = route.previewSrc;
       }
 
       function deferredPreviews() {
+        const remaining = liveDimensions.filter((item) => item.type === "iframe" && !item.eager);
         const launch = () => {
-          setTimeout(() => setPreviewSource("ux"), 320);
-          setTimeout(() => setPreviewSource("icon"), 640);
+          remaining.forEach((item, index) => {
+            setTimeout(() => setPreviewSource(item.id), 320 + index * 260);
+          });
         };
 
         if ("requestIdleCallback" in window) {
@@ -772,17 +1124,22 @@
       }
 
       function getReadmePreview(text) {
-        const lines = text.split("\n").slice(0, 22).join("\n");
+        const lines = text.split("\n").slice(0, 18).join("\n");
         return lines.length ? lines : "README preview unavailable.";
       }
 
-      async function ensureSkillsReadme() {
+      async function ensureMethodsReadme() {
+        const methodsRoute = routeMap.methods;
+        if (!methodsRoute) {
+          return "";
+        }
+
         if (state.readmeText) {
           return state.readmeText;
         }
 
         if (!state.readmePromise) {
-          state.readmePromise = fetch(routes.skills.readmeUrl)
+          state.readmePromise = fetch(methodsRoute.readmeUrl)
             .then((response) => {
               if (!response.ok) {
                 throw new Error(`Failed to fetch README (${response.status})`);
@@ -790,31 +1147,35 @@
               return response.text();
             })
             .then((text) => {
+              const previewCopy = document.getElementById("methods-preview-copy");
               state.readmeText = text;
-              skillsPreviewCopy.textContent = getReadmePreview(text);
-              focusSkillsCopy.textContent = text;
-              markLoaded("skills");
-              skillsPreviewLoader.style.opacity = "0";
+              if (previewCopy) {
+                previewCopy.textContent = getReadmePreview(text);
+              }
+              focusMethodsCopy.textContent = text;
+              markLoaded("methods");
               return text;
             })
             .catch(() => {
               const fallback = [
                 "# design-skills",
                 "",
-                "Skill / prompt / constraint assets for the design network.",
+                "Reusable skill, prompt, and constraint assets for the design network.",
                 "",
-                "- pick a style on webdesign.zondev.top",
-                "- take the matching SKILL.md",
-                "- reuse it in Cursor / Claude / Codex",
+                "- pick a dimension from this index",
+                "- open the matching specialized surface",
+                "- reuse the linked skill or prompt assets",
                 "",
                 "Open the repo in a new tab for the full index."
               ].join("\n");
 
+              const previewCopy = document.getElementById("methods-preview-copy");
               state.readmeText = fallback;
-              skillsPreviewCopy.textContent = fallback;
-              focusSkillsCopy.textContent = fallback;
-              markLoaded("skills");
-              skillsPreviewLoader.style.opacity = "0";
+              if (previewCopy) {
+                previewCopy.textContent = fallback;
+              }
+              focusMethodsCopy.textContent = fallback;
+              markLoaded("methods");
               return fallback;
             });
         }
@@ -823,24 +1184,24 @@
       }
 
       function renderFocusRoute(routeId) {
-        const route = routes[routeId];
+        const route = routeMap[routeId];
         state.activeRoute = routeId;
         focusShell.dataset.active = routeId;
-        focusTitle.textContent = route.label;
+        focusTitle.textContent = route.title;
         focusOpen.href = route.href;
-        focusOpen.setAttribute("aria-label", `Open ${route.label} in new tab`);
+        focusOpen.setAttribute("aria-label", `Open ${route.title} in new tab`);
 
-        if (route.type === "skills") {
+        if (route.type === "methods") {
           focusBody.classList.remove("is-loading");
           focusFrame.classList.add("is-hidden");
-          focusSkills.classList.remove("is-hidden");
-          focusOpen.textContent = "打开 GitHub ↗";
-          ensureSkillsReadme();
+          focusMethods.classList.remove("is-hidden");
+          focusOpen.textContent = "Open GitHub ↗";
+          ensureMethodsReadme();
           return;
         }
 
-        focusOpen.textContent = "在新标签打开 ↗";
-        focusSkills.classList.add("is-hidden");
+        focusOpen.textContent = "Open in New Tab ↗";
+        focusMethods.classList.add("is-hidden");
         focusFrame.classList.remove("is-hidden");
         focusBody.classList.add("is-loading");
 
@@ -855,28 +1216,31 @@
       }
 
       function clearOriginState() {
-        cards.forEach((card) => card.classList.remove("is-origin"));
-        snapshotGrid.classList.remove("is-transitioning");
+        liveGrid.querySelectorAll(".dimension-card--live").forEach((card) => card.classList.remove("is-origin"));
+        liveGrid.classList.remove("is-transitioning");
       }
 
       function openRoute(routeId, options = {}) {
-        const route = routes[routeId];
+        const route = routeMap[routeId];
         if (!route) {
           return;
         }
 
         const originCard =
-          options.originCard || document.querySelector(`.snapshot-card[data-route="${routeId}"]`);
+          options.originCard || liveGrid.querySelector(`.dimension-card[data-route="${routeId}"]`);
         const rect = originCard
           ? originCard.getBoundingClientRect()
           : { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
 
-        cards.forEach((card) => card.classList.toggle("is-origin", card === originCard));
-        snapshotGrid.classList.add("is-transitioning");
+        liveGrid
+          .querySelectorAll(".dimension-card--live")
+          .forEach((card) => card.classList.toggle("is-origin", card === originCard));
+        liveGrid.classList.add("is-transitioning");
         renderFocusRoute(routeId);
         focusShell.hidden = false;
         focusShell.classList.add("is-visible");
         focusShell.classList.remove("is-ready");
+        document.body.classList.add("is-focus-mode");
 
         const instant = options.instant === true;
 
@@ -921,7 +1285,7 @@
         }
 
         const routeId = state.activeRoute;
-        const originCard = document.querySelector(`.snapshot-card[data-route="${routeId}"]`);
+        const originCard = liveGrid.querySelector(`.dimension-card[data-route="${routeId}"]`);
         const rect = originCard
           ? originCard.getBoundingClientRect()
           : { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
@@ -943,19 +1307,50 @@
           focusShell.style.left = "0px";
           focusShell.style.width = "100vw";
           focusShell.style.height = "100dvh";
+          document.body.classList.remove("is-focus-mode");
         }, 220);
 
         state.mode = "grid";
         state.activeRoute = null;
 
         if (!options.skipHistory) {
-          history.replaceState(null, "", "#grid");
+          history.replaceState(null, "", "#dimensions");
         }
       }
 
-      cards.forEach((card) => {
+      function buildIndex() {
+        const liveCount = liveDimensions.length;
+        const plannedCount = plannedDimensions.length;
+
+        coverMeta.appendChild(
+          createMetaCard(
+            "Live",
+            `${liveCount} dimensions`,
+            "Web visual, interaction, icon systems, and reusable methods are already online and browsable."
+          )
+        );
+        coverMeta.appendChild(
+          createMetaCard(
+            "Expanding",
+            `${plannedCount} next axes`,
+            "Motion, brand systems, type systems, and image direction are placed in the structure before the dedicated sites exist."
+          )
+        );
+
+        liveDimensions.forEach((item) => {
+          liveGrid.appendChild(createLiveCard(item));
+        });
+
+        plannedDimensions.forEach((item) => {
+          plannedGrid.appendChild(createPlannedCard(item));
+        });
+      }
+
+      buildIndex();
+
+      liveGrid.querySelectorAll(".dimension-card--live").forEach((card) => {
         card.addEventListener("click", (event) => {
-          if (event.target.closest(".card-open")) {
+          if (event.target.closest(".dimension-open")) {
             return;
           }
           openRoute(card.dataset.route, { originCard: card });
@@ -969,7 +1364,7 @@
         });
       });
 
-      previewFrames.forEach((frame) => {
+      liveGrid.querySelectorAll("[data-preview-frame]").forEach((frame) => {
         frame.addEventListener("load", () => {
           const routeId = frame.dataset.previewFrame;
           markLoaded(routeId);
@@ -992,29 +1387,30 @@
       });
 
       window.addEventListener("hashchange", () => {
-        const next = window.location.hash.replace("#", "") || "grid";
+        const next = window.location.hash.replace("#", "") || "top";
 
-        if (next === "grid") {
+        if (next === "top" || next === "dimensions" || next === "expanding") {
           closeRoute({ skipHistory: true });
           return;
         }
 
-        if (Object.prototype.hasOwnProperty.call(routes, next)) {
-          if (state.activeRoute !== next) {
-            openRoute(next, { instant: true, skipHistory: true });
-          }
+        if (Object.prototype.hasOwnProperty.call(routeMap, next) && state.activeRoute !== next) {
+          openRoute(next, { instant: true, skipHistory: true });
         }
       });
 
-      setPreviewSource("webdesign");
-      deferredPreviews();
-      ensureSkillsReadme();
+      liveDimensions
+        .filter((item) => item.type === "iframe" && item.eager)
+        .forEach((item) => {
+          setPreviewSource(item.id);
+        });
 
-      const initialHash = window.location.hash.replace("#", "") || "grid";
-      if (Object.prototype.hasOwnProperty.call(routes, initialHash)) {
+      deferredPreviews();
+      ensureMethodsReadme();
+
+      const initialHash = window.location.hash.replace("#", "");
+      if (Object.prototype.hasOwnProperty.call(routeMap, initialHash)) {
         openRoute(initialHash, { instant: true, skipHistory: true });
-      } else if (initialHash !== "grid") {
-        history.replaceState(null, "", "#grid");
       }
     </script>
   </body>
