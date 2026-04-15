@@ -1,6 +1,6 @@
 # Design Index
 
-Static index site for `design.zondev.top`.
+Static registry site for `design.zondev.top`.
 
 ## Purpose
 
@@ -8,9 +8,9 @@ Static index site for `design.zondev.top`.
 
 The site should do one job well:
 
-- present the design network as a growing index instead of a fixed portal
+- present the design network as a growing registry instead of a fixed portal
 - organize entry by **dimension**, not by historical repo or product naming
-- let visitors scan current live layers first, then enter a focused route
+- let visitors scan current live layers first, then understand what is in build and what is only planned
 - leave room for new dimensions without redoing the homepage each time
 
 ## UX Rule
@@ -25,9 +25,10 @@ That means:
 
 - clear site identity first: `Design Index`
 - a short tagline: `Design resources, by dimension.`
-- current live dimensions separated from planned / future dimensions
-- each live card must explain what that dimension collects
-- cards can open a focus view, but the homepage must still work as an index even before any click
+- one unified registry schema for every dimension
+- lifecycle states separated in the UI: `live`, `in_build`, `planned`
+- each live card must explain what that dimension collects, what the user gets, and what comes next
+- cards can open a focus view, but the homepage must still work as a registry even before any click
 
 ## Current Live Dimensions
 
@@ -55,12 +56,22 @@ That means:
 
 The homepage should be able to grow without changing its core pattern.
 
-Use two layers:
+Use one registry with explicit lifecycle states:
 
-- `Current Dimensions`: live cards with preview + focus view + external link
-- `Growing Structure`: planned dimensions that are not live yet, but already have a place in the index
+- `live`: preview + focus view + external link
+- `in_build`: real candidate dimension with current asset / prototype / next step
+- `planned`: reserved slot with rationale but no fake live entry yet
 
 This avoids turning the homepage into another fixed 4-slot gateway.
+
+## Current Build Candidate
+
+### Research Boards
+
+- state: `in_build`
+- why next: strongest candidate for the 5th true dimension
+- current asset: `nishengdao-site` local prototype + existing visual/reference board patterns
+- eventual role: evidence boards, reference atlases, relation maps, editorial decision surfaces
 
 ## Technical Notes
 
@@ -72,6 +83,7 @@ This avoids turning the homepage into another fixed 4-slot gateway.
   - `ux.zondev.top`
   - `icon.zondev.top`
 - GitHub does not allow iframe embedding for `design-skills`, so `Methods` uses a local README render + external links
+- registry data currently lives inside `index.html` as one unified array; adding a new dimension should mean adding one new object, not patching multiple sections by hand
 - focus mode is a frontend shell only; deep content stays in the specialized sites
 
 ## Local Preview
